@@ -75,7 +75,7 @@ MAC Spoofing :
 	$ ifconfig eth0 down > ifconfig eth0 hw ether 00:11:22:33:44:55 > ifconfig eth0 up
 
 Assigning new IP via DHCP Server :
-	Server runs of 'dhcpd' - the daemon. Requested via 'dhclient'. Requires a DHCP assigned IP addr. (Note : 'dhclient' is for Debian, different for all other distros.)
+	Server runs of '*dhcpd*' - the daemon. Requested via '*dhclient*'. Requires a DHCP assigned IP addr. (Note : 'dhclient' is for Debian, different for all other distros.)
 	$ dhclient eth0 
 		->DHCPDISCOVER req is sent by this command and then receives an offer from the DHCP i.e DHCPOFFER. Now, ifconfig will show a difft IP addr as given by the DHCP Server.
 
@@ -84,3 +84,15 @@ Manipulating DNS :
 		Directly pass-on the domain and add the 'ns' tag to make the domain as the nameserver itself. 'mx' will fetch the mail-exchange server.
 		$ dig hackerarise.com ns OR $ dig hackerarise.com mx
 		-- Some Linux servers use BIND (Berkeley Internet Name Domain)  which is just a fancy name for DNS. 
+
+Changing your DNS Server :
+	Edit a file stored in '/etc/resolv.conf'. There you will see the domain, search & nameserver fields. Swap the values here to switch your DNS server.
+	Other method to do the same (although this cleanly overwrites the file's content) -> 
+		$ echo "nameserver 8.8.8.8" > /etc/resolv.conf
+
+Mapping your own IP Addrs :
+	'hosts' file located in /etc/hosts. Useful for hijacking a TCP connection on your LAN to direct traffic to a malicious webserver by using a tool like *'dnsspoof'* 
+	Usually this file has a mapping for your localhost only BUT you can map any website to any IP Address. Eg : "192.168.181.131   bankofamerica.com". Decent for local network attacks.
+	[dnsspoof & Ettercap can be used]
+
+##### **Handling SW Packages**
