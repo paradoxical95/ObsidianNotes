@@ -60,3 +60,27 @@ $ less file_name -> "less is more" -- offers a filter to search for the term sho
 
 ##### **Networking**
 'loopback' addr -- same as 'localhost' = 127.0.0.1
+iwconfig - check for wireless adapter info -- good for getting power, the mode [monitor, managed, promiscuous] etc.
+Changing info -> MAC or IP Addr :
+	$ ifconfig eth0 192.1688.181.155 
+		-> modifies what your router sees to redirect packets
+
+Changing Netmask +/ Broadcast :
+	$ ifconfig eth0 192.168.181.155 netmask 255.255.0.0 broadcast 192.168.1.255
+		-> Netmask is the subnet mask -- determines the portion of the IP Addr to the NW and which refers to the host. Here, first 2 octets (16 bits) represent the network and last 2 show the hosts within that network.
+		-> Broadcast is the addr used to send packets to all hosts on the same network segment. Default (bcz of subnet) would become 192.168.255.255 but here overridden to 192.169.1.155 -- Basically packets sent to this will be broad-casted on that specific sub-network.	
+
+MAC Spoofing :
+	Take down the interface, change the Addr, restart
+	$ ifconfig eth0 down > ifconfig eth0 hw ether 00:11:22:33:44:55 > ifconfig eth0 up
+
+Assigning new IP via DHCP Server :
+	Server runs of 'dhcpd' - the daemon. Requested via 'dhclient'. Requires a DHCP assigned IP addr. (Note : 'dhclient' is for Debian, different for all other distros.)
+	$ dhclient eth0 
+		->DHCPDISCOVER req is sent by this command and then receives an offer from the DHCP i.e DHCPOFFER. Now, ifconfig will show a difft IP addr as given by the DHCP Server.
+
+Manipulating DNS :
+	Use 'dig' :
+		Directly pass-on the domain and add the 'ns' tag to make the domain as the nameserver itself. 'mx' will fetch the mail-exchange server.
+		$ dig hackerarise.com ns OR $ dig hackerarise.com mx
+		-- Some Linux servers use BIND (Berkeley Internet Name Domain)  which is just a fancy name for DNS. 
