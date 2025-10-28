@@ -78,8 +78,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300,
-    "collapsed": true
+    "width": 300
   },
   "right": {
     "id": "2d2673f0021d7770",
@@ -172,6 +171,8 @@
   },
   "active": "2382c5d8fda08ff8",
   "lastOpenFiles": [
+    "Untitled.md",
+    "Linux Basics for Hackers - Notes.md",
     "Linux Basics for Hackers - Notes.pdf"
   ]
 }

@@ -96,3 +96,5 @@ Mapping your own IP Addrs :
 	[dnsspoof & Ettercap can be used]
 
 ##### **Handling SW Packages**
+To check for any package already available in local 'apt' repo :
+	$ apt-cache search _keyword_  -> Eg: apt-cache search snort
