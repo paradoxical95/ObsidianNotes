@@ -59,4 +59,4 @@ $ more file_name -> offers a scroll-able page if the file is to big.
 $ less file_name -> "less is more" -- offers a filter to search for the term should you need to -- use the '/' key. Still scroll-able but with better functionality.	
 
 ##### **Networking**
-
+'loopback' addr -- same as 'localhost' = 127.0.0.1
