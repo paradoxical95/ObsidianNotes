@@ -1,0 +1,18 @@
+/* Preserve spaces and tabs in normal text */
+/*
+.markdown-preview-view p,
+.markdown-preview-view li {
+    white-space: pre-wrap;
+}
+*/
+
+
+/* Preserve spaces, tabs, and newlines */
+.markdown-preview-view p,
+.markdown-preview-view li,
+.markdown-preview-view pre,
+.markdown-preview-view div {
+  white-space: pre-wrap;      /* keep newlines & multiple spaces */
+  tab-size: 4;                /* control tab width (default is 8) */
+  -moz-tab-size: 4;           /* Firefox compatibility */
+}

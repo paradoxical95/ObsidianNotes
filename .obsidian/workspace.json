@@ -78,7 +78,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 300,
+    "collapsed": true
   },
   "right": {
     "id": "2d2673f0021d7770",
@@ -166,13 +167,19 @@
       "daily-notes:Open today's daily note": false,
       "templates:Insert template": false,
       "command-palette:Open command palette": false,
-      "bases:Create new base": false
+      "bases:Create new base": false,
+      "pdf-plus:PDF++: Toggle auto-copy": false,
+      "pdf-plus:PDF++: Toggle auto-focus": false,
+      "pdf-plus:PDF++: Toggle auto-paste": false
     }
   },
   "active": "2382c5d8fda08ff8",
   "lastOpenFiles": [
-    "Untitled.md",
+    "preserve-whitespace.css",
+    "Untitled 1.base",
+    "Untitled.base",
     "Linux Basics for Hackers - Notes.md",
+    "Untitled.md",
     "Linux Basics for Hackers - Notes.pdf"
   ]
 }
