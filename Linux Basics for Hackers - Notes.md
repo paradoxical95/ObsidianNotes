@@ -118,3 +118,31 @@ Changing info -> MAC or IP Addr :
 		Format : "deb http:// ------   --package_name-- main non-free contrib" etc.
 
 #### **File Directories & Permission**
+r,w,x -> read, write and execute
+
+**Granting ownership :**
+$ chown _username_ _file-path-name_  -> Provides the ownership of that file to that user
+$ chgrp _group-name_  _package-or-module-name_ -> Provides a user-group access to that module
+
+**Checking Permissions** :
+$ ls -l  _file-or-path-to-it_  -> will lay down the whole sheet. The type, permission on the file for owner/groups/users, number of links, the owner, size in bytes, creation/mod date & its name. 
+	Eg: "drwxr-xr-x" vs "-rw-r--r--". First letter denotes directory if 'd' or file if empty dash. Followed by the permission values for 3 groups i.e owner then group then other_users. Hence we observe 3 values at a time. Dash means no permission ofc. 
+	In '-rw-r--r--' -> File, owner has read/write, group and other users only have read permissions. 
+2nd way : There is a proper calculation done in Octal terms as well. 
+	`001 : 1 : --x` 
+	`010 : 2 : -w-`
+	`011 : 3 : -wx`
+	`100 : 4 : r--`
+	`101 : 5 : r-x`
+	`110 : 6 : rw-`
+	`111 : 7 : rwx`
+Total RWX is 7. Since we have 3 sets of permissions, giving a full read+write+execute permission to everyone, for example, would look like ->
+$ chmod 777 hashcat.hcstat
+
+3rd way : UGO Syntax
+Here, '-' removes a permission, '+' adds and '=' sets a permission.
+Eg: Remove the write (w) permission from user on a file
+	$ chmod u-w hashcat.hcstat -> Now -rw-r--r-- becomes -r-xr-xr--
+Or for user and other users at once
+	$ chmod u+x, o+x hashcat.hcstat
+Now, you can set execute permission for yourself on a newly downloaded tool/script bcz by default Linux won't set it
