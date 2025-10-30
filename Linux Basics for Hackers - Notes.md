@@ -148,3 +148,13 @@ Or for user and other users at once
 Now, you can set execute permission for yourself on a newly downloaded tool/script bcz by default Linux won't set it
 	$ chmod 766 some_new_tool   -> grants us (the owner) all permission including execute -- and everyone else only R/W permissions.
 
+Masking can be done :
+	$ umask 007  -> set it so only the user and members of the user's group have permissions.
+
+Special Permissions : 
+	SUID - set user ID & SGID - set group ID
+	1) Granting Temp Root w/ SUID
+		/etc/shadow contains all user's password -- requires root privileges to execute. SUID requires an additional bit before the permission bit. So 644 becomes 4644 i.e 
+		$ chmod 4644 _file_name_ 
+	2) Granting the Root user's Group permissions SGID
+		SGID works differently. Someone without execute permission can execute a file if the owner belongs to the group that has the permission to execute that file. When the bit is set on a directory -- t**he ownership of new files created in that directory goes to the directory's creator's group rather than the file creator's group.** 
