@@ -146,3 +146,5 @@ Eg: Remove the write (w) permission from user on a file
 Or for user and other users at once
 	$ chmod u+x, o+x hashcat.hcstat
 Now, you can set execute permission for yourself on a newly downloaded tool/script bcz by default Linux won't set it
+	$ chmod 766 some_new_tool   -> grants us (the owner) all permission including execute -- and everyone else only R/W permissions.
+
