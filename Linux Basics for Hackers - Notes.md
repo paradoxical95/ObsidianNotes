@@ -148,13 +148,54 @@ Or for user and other users at once
 Now, you can set execute permission for yourself on a newly downloaded tool/script bcz by default Linux won't set it
 	$ chmod 766 some_new_tool   -> grants us (the owner) all permission including execute -- and everyone else only R/W permissions.
 
-Masking can be done :
+**Masking can be done :**
 	$ umask 007  -> set it so only the user and members of the user's group have permissions.
 
-Special Permissions : 
+**Special Permissions :** 
 	SUID - set user ID & SGID - set group ID
 	1) Granting Temp Root w/ SUID
 		/etc/shadow contains all user's password -- requires root privileges to execute. SUID requires an additional bit before the permission bit. So 644 becomes 4644 i.e 
 		$ chmod 4644 _file_name_ 
 	2) Granting the Root user's Group permissions SGID
 		SGID works differently. Someone without execute permission can execute a file if the owner belongs to the group that has the permission to execute that file. When the bit is set on a directory -- t**he ownership of new files created in that directory goes to the directory's creator's group rather than the file creator's group.** 
+		$ chmod 2644 _file_name_  [ SGID bit is represented by 2 and SUID uses 4]
+
+**Privilege Escalation :**
+One way - exploit the **SUID Bit** in the system. Eg: Scripts that need to change the password usually come with the SUID bit set already. Use that to gain temporary root priv - then do something shady like getting the file at /etc/shadow.
+To proceed -> Use commands like 'find' to find the files and see their bit. Example : 
+	$ find / -user root -perm -4000
+Kali now starts at the top of the filesystem (because of '/')  and looks everywhere below this -- the file that are owned by 'root' & specified with 'user root' + have the SUID bit set (-perm -4000). This command will give an output like ->
+	/usr/bin/chsh ; /usr/bin/gpasswd; /usr/bin/pkexec; /usr/bin/sudo; /usr/bin/passwd,.. etc. 
+Navigating to this directory, and observing, let's say "sudo" using ls-alh, you will see ->
+	-rwsr-xr-x   root   root    140944   _date_  sudo
+Here, the 's' in place of 'x' determines the SUID bit. Logically, anyone who runs the _sudo_ file has the priv of a root user -- which becomes an attack vector IF an application -- which needs access to /etc/shadow file to successfully complete their task -- can be hijacked. 
+
+#### **Process Management**
+To view - use -> $ ps
+Every process ofc has a PID or process ID. You can use -> $ kill _PID_value_  to kill any process.
+Issue ? 'ps' command won't give you much info either ways. We have another command for that -> 
+	$ ps aux
+It shows the USER, PID, %CPU, VSZ, RSS, TTY, STAT, START, TIME & COMMAND.
+
+**Filtering by Process Name**
+For instance, try running _msfconsole_ command to have its process running. Then use _grep_ to filter it. This way you can filter all the processes running/attached to it.
+	$ ps aux | grep msfconsole
+You might see a few, such as the attached DB running, the ruby script, etc, and finally the program itself. 
+We also have commands like "_top_" to monitor the processes sorted by their resource usage. It's active i.e refreshes on its own (every 3-4 seconds)
+
+**Managing Processes**
+We can alter the affinity/priority of any process by using the _"nice"_  command (by passing a numeric value to its argument '-n'). Kernel always has the final say, we're just suggesting. The value ranges from -20 to +19. Sadly, **HIGH value means LOW priority and vice versa**. So -20 is most likely to receive priority, 0 is default ofc, and +19 is least likely. Usually, any process inherits the _nice_ value of its parent process.
+Unsurprisingly, you can alter the priority by using the _"renice"_ command. 
+	DIFFERENCE !! 
+	**nice is relative**. Its adds/subtracts the priority value given what you pass to it. A process with a priority of 15, when asked 'nicely' to be -10 will have a priority of 5 now. OR when asked to be +5, it will now be 20. 'nice' can use the process via its location as well.
+	**renice is absolute**. Requires  a fixed value b/w -20 and +19. BUT it sets the process to that level, cuz you've altered the deal and it prays you don't alter it any further. It also requires the PID. 
+Examples : 
+$ nice -n 10 /bin/some_slow_process  [lowers it]
+or 
+$ nice -n -9 /bin/some_slow_process [improves it]
+and
+$ renice 20 6996 [6996 is the PID of some_slow_process, and 20 is setting it]
+NOTE: 'top' can also be used to alter these values.
+
+**Killing Processes**
+_'kill'_ command is your friend. Just pass the PID and pass the required kill signal. There are 64 of them. 
