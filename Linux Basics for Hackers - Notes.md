@@ -227,5 +227,27 @@ OR $ msfconsole at now + 20 minutes
 'crond' is best for scheduling tasks to occur everyday/week/month etc.  [SEPARATE CHAPTER LATER]
 
 #### **13) MANAGING USER ENVIRONMENT VARIABLE**
+Always 2 there are. Environment and Shell variables.
+EnV - always uppercase, system wide, controls the way the system acts/looks/feels + inherited by child shells or processes.
+ShV - usually lowercase + valid only in the shell they are set in. 
+Format -> KEY=value1 OR KEY=value1:value2:value3...
 
+To see the EnV's, use 
+$ env
 
+**View All**
+To see vars of all types (including shell, local + shell functions) use "set" (and preferably filter it with 'more' to have a scrollable feed)
+$ set | more
+OUTPUT :
+`BASH=/bin/bash`
+`BASHOPTS=check........:.....`
+`BASH_ALIASES=()`
+`BASH_ARGC=()`
+....etc
+
+**Grep can be used to filter**
+$ set | grep HISTSIZE -> filtering via grep. HISTSIZE is one such var that contains the maximum number of commands your command history file will store. It does not store the commands themselves just the number of them that can be stored.
+**Modify these vars**
+Simply set them. Eg: $ HISTSIZE=0
+
+**Making Var Changes Permanent**
