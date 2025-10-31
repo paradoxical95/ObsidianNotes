@@ -1,7 +1,7 @@
-#### **Binaries**	
+#### **1) BINARIES**	
 Located in -> /usr/bin and/or /usr/sbin	
 
-#### **Linux File System**	
+#### **2) LINUX FILE SYSTEM**	
 	'/' -> The actual root system. The top most.
 Inside it -> 
 	/boot - Kernel image  
@@ -17,11 +17,11 @@ Inside it ->
 	/lib - libraries 
 	/usr -> /sbin, /bin, /lib (more of the same stuff) /media - for ejectable media	
 
-#### **cd Command**
+#### **3) cd Command**
 use '..' to move up 1 level  
 '.. ..' for 2 levels & '.. .. ..' for 3 levels and so on	
 
-#### **Search-based commands**	
+#### **4) Search-based commands**	
 $ locate 'find_this' -> finds all occurences 
 $ whereis 'module_name' -> finds all BINARIES of the target (usually with man pages) 
 $ which aircrack-ng -> finds the binary file located in the PATH variable of the system 
@@ -29,20 +29,20 @@ $ find -directory -option -targetExp -> finds literally everything [Eg: find /et
 Lastly, grep to filter 
 $ ps aux | grep apache2 -> will filter from all auxilliary processes containing apache2	
 
-#### **'cat' is versatile remember**
+#### **5) 'cat' is versatile**
 $ cat file_name -> will spill the file contents. 
 $ cat > file_name -> will let you write in it BUT WILL REPLACE ALL EXISTING DATA. 
 $ cat >> file_name -> will actually let you append the text you enter.	
 
-#### **Renaming doesn't exist in Linux**	
+#### **6) Renaming doesn't exist in Linux**	
 So we use  
 	$ mv newfile newfile2 -> to essentially rename the file	
 
-#### **Removing a Dir**	
+#### **7) REMOVING A DIRECTORY**	
 Only the directory : $ rmdir
 When that fails  : $ rm -r (recursively delete everything in it)
 
-#### **Text Manipulation**	
+#### **8) TEXT MANIPULATION**	
 head and tail ->
 $ head file_name -> first 10 lines 
 $ head -n file_name -> n number of lines from the start
@@ -60,7 +60,7 @@ $ sed s/search_term/replace_term/g path_to_filename > newfile_name
 $ more file_name -> offers a scroll-able page if the file is to big.  
 $ less file_name -> "less is more" -- offers a filter to search for the term should you need to -- use the '/' key. Still scroll-able but with better functionality.	
 
-#### **Networking**
+#### **9) NETWORKING**
 'loopback' addr -- same as 'localhost' = 127.0.0.1
 iwconfig - check for wireless adapter info -- good for getting power, the mode [monitor, managed, promiscuous] etc.
 Changing info -> MAC or IP Addr :
@@ -97,7 +97,7 @@ Changing info -> MAC or IP Addr :
 	Usually this file has a mapping for your localhost only BUT you can map any website to any IP Address. Eg : "192.168.181.131   bankofamerica.com". Decent for local network attacks.
 	[dnsspoof & Ettercap can be used]
 
-#### **Handling SW Packages**
+#### **10) HANDLING SW PACKAGES**
 
 **Search for package in local repo:**
 	$ apt-cache search _'keyword'_  
@@ -117,7 +117,7 @@ Changing info -> MAC or IP Addr :
 		Categories : main (OSS), universe (community maintained OSS), multiverse (SW restricted by copyright), restricted (proprietary device drivers), backports (packages from later releases)
 		Format : "deb http:// ------   --package_name-- main non-free contrib" etc.
 
-#### **File Directories & Permission**
+#### **11) FILE DIRECTORIES & PERMISSION**
 r,w,x -> read, write and execute
 
 **Granting ownership :**
@@ -170,7 +170,7 @@ Navigating to this directory, and observing, let's say "sudo" using ls-alh, you 
 	-rwsr-xr-x   root   root    140944   _date_  sudo
 Here, the 's' in place of 'x' determines the SUID bit. Logically, anyone who runs the _sudo_ file has the priv of a root user -- which becomes an attack vector IF an application -- which needs access to /etc/shadow file to successfully complete their task -- can be hijacked. 
 
-#### **Process Management**
+#### **12) PROCESS MANAGEMENT**
 To view - use -> $ ps
 Every process ofc has a PID or process ID. You can use -> $ kill _PID_value_  to kill any process.
 Issue ? 'ps' command won't give you much info either ways. We have another command for that -> 
@@ -198,4 +198,34 @@ $ renice 20 6996 [6996 is the PID of some_slow_process, and 20 is setting it]
 NOTE: 'top' can also be used to alter these values.
 
 **Killing Processes**
-_'kill'_ command is your friend. Just pass the PID and pass the required kill signal. There are 64 of them. 
+_'kill'_ command is your friend. Just pass the PID and pass the required kill signal. There are 64 of them. Default is SIGTERM (n=15) i.e  termination. Ofc they are optional. Use them as a flag arg while using kill command.
+$ kill -n _PID_ 
+Example - $ kill -9 6887
+Signal Interrupts for kill ->
+`SIGHUP (1) : Hangup - stops and then restarts with the same PID`
+`SIGIN (2) : Interrupt - weak kill signal not guaranteed to work but does work mostly.`
+`SIGQUIT (3) : Quit/Core dump - terminates but saves the process info in memory + inside pwd.` 
+`SIGKILL (9) : absolute kill signal. Forces the process to stop by sending the process's resources to a special device -- /dev/null`
+
+Basically : to restart - use '-1' ; for zombie/malicious - use '-9'
+
+**Running Processes in the Background**
+Everything runs from within the shell and the shell waits for the task/command to run/finish. It waits for this whole sequence -- hence busy & won't allow any new commands. To prevent this we can essentially detach the process from the shell. Use the _'&'_ right after the task.
+$ mousepad _someDoc_ &
+
+**Moving to foreground**
+Use the _'fg'_ command followed by the PID. Fetch the PID if needed.
+$ fg 1273
+
+**Process Scheduling**
+Either use _'at'_ or _'crond'_. 
+'at' is useful for scheduling a job to run once at some point in the future -- execute 1 or many commands in the future, passed with time as argument.
+Eg: $ msfconsole at 7:20PM June 13
+OR $ msfconsole at now + 20 minutes
+// If you just write 'at' followed by a time, then the "at>" console will open asking you to map the file/process path for it. 
+
+'crond' is best for scheduling tasks to occur everyday/week/month etc.  [SEPARATE CHAPTER LATER]
+
+#### **13) MANAGING USER ENVIRONMENT VARIABLE**
+
+
