@@ -247,12 +247,15 @@ OR $ > msfconsole at now + 20 minutes
 'crond' is best for scheduling tasks to occur everyday/week/month etc.  [SEPARATE CHAPTER LATER]
 
 #### **13) MANAGING USER ENVIRONMENT VARIABLE**
-Always 2 there are. Environment and Shell variables.
+Always 2 there are. **Environment** and **Shell** variables.
 EnV - always uppercase, system wide, controls the way the system acts/looks/feels + inherited by child shells or processes.
 ShV - usually lowercase + valid only in the shell they are set in. 
-Format -> KEY=value1 OR KEY=value1:value2:value3...
+Format -> 
+KEY=value1 
+OR 
+KEY=value1:value2:value3...
 
-To see the En-V's, use 
+To see the Env-V's, use 
 $ > env
 
 **View All**
@@ -313,3 +316,83 @@ Simply just name and then value. Test via 'echo' command. Use it in scripts if y
 
 #### **14) BASH SCRIPTING**
 Very important. Apart from knowing Python/Perl/Ruby.
+We run the commands directly here. As in -- more connected to the system than a GUI would let you.
+
+==Before that, some more info==
+**`/dev/null`** -> is a black-hole for info in Linux. Dump anything unwanted in it. Good for hiding the on-screen output of any tool/script 
+**`2>`**  -> is basically redirecting the error from the preceding command/action. This is the 'stderr' stream. Combining this and dev/null -> **` $ > _something_ 2> /dev/null`**  can effectively suppress the errors and send them into the black hole.
+
+**Humble Beginnings :**
+Start with 'shebang' which declares the shell. Comments with '#' and rest are normal commands that you write on the terminal which can be written here.
+`#! /bin/bash`  
+`# this is my first bash script`
+`echo "Hello Friend"`
+
+After making such scripts and saving them, you need to set the execute permission on them.
+Do that by either using `$> chmod +x` OR `$> chmod 755` before the script name.
+[Difference? chmod +x will just add 'x' bit. chmod 755 will set it specifically for all groups. Meaning, if a group did not have any permission, they won't get it either way if we use '+x' but 755 will overwrite their current permission. ]
+And to run/execute it, simply  `$ > ./script_name`
+
+For more functionality, 'echo' can be used like `cout<<` for outputs and 'read' can be used like `cin>>` for inputs. You can directly write the var name for inputs but to use it,  you need the '$' sign. Example :
+`#! /bin/bash`
+`echo "What's your Name?"`
+`read name`
+`echo "Hey" $name "!. Hope you're doing well..."`
+
+**Simple Scanner**
+First we'll make a basic script that uses 'nmap' with a simple TCP scan mode to scan for ports 3306 i.e MySQL services. We send the on-screen output to /dev/null and then outputting the scan results to a file using the -o flag but with a 'G' to make it grep-able.
+`#! /bin/bash`
+`# This script is designed to find hosts with MySQL installed on local network for testing`
+`nmap -sT 192.168.1.0/24 -p 3306 >/dev/null -oG MySQLscan`
+`cat MySQLscan | grep open > MySQLscan2`
+`cat MySQLscan2`
+ 
+ Self-explanatory code. To improve it, we can use variables to input the first IP Addr, the octet value for range and optionally the port. 
+ 
+ **Slightly Advanced Scanner**
+ `#! /bin/bash`
+ `echo "Enter the first IP : "`
+ `read FirstIP`
+ `echo "Enter the last IP (of the octet) : "`
+ `read LastIP`
+ `echo "Enter the port (3306 for MySQL) : "`
+ `read Port`
+ `nmap -sT $FirstIP-$LastIP -p $Port >/dev/null -oG MySQLscan`
+ `cat MySQLscan | grep open > MySQLscan2`
+ `cat MySQLscan2`
+ [Also self explanatory code]
+
+**Bash Helpful Commands :**
+
+| Command    | Meaning                                                 |
+| ---------- | ------------------------------------------------------- |
+| `:`        | Returns 0 or true                                       |
+| `.`        | executes a shell script                                 |
+| `bg`       | puts the job in background                              |
+| `break`    | exits the current loop                                  |
+| `cd`       | change directory                                        |
+| `continue` | resume the current loop                                 |
+| `echo`     | displays the command arg                                |
+| `eval`     | evaluate the following <br>expression                   |
+| `exec`     | execute the command <br>without creating a new process  |
+| `exit`     | quits the shell                                         |
+| `export`   | Export a var/fn for all -- globally                     |
+| `fg`       | brings a job to foreground                              |
+| `getopts`  | parses args to the shell script                         |
+| `jobs`     | list jobs in running in bg                              |
+| `pwd`      | pwd                                                     |
+| `read`     | std-input                                               |
+| `readonly` | var declaration as read-only                            |
+| `set`      | list all vars (En-V & PATH)                             |
+| `shift`    | moves the parameters to the left                        |
+| `test`     | evaluate the args                                       |
+| `[`        | conditional test                                        |
+| `times`    | prints the user & system times                          |
+| `trap`     | traps a signal                                          |
+| `type`     | shows how each arg would be<br>interpreted as a command |
+| `umask`    | changes the default permission<br>for a new file        |
+| `unset`    | deletes a value from a var or Fn                        |
+| `wait`     | waits for a bg process to complete                      |
+#### **15) COMPRESSING & ARCHIVING**
+**_'tar'_** is your buddy in most cases. **_'zip'_** is also a tool.
+tar is 
