@@ -395,4 +395,61 @@ First we'll make a basic script that uses 'nmap' with a simple TCP scan mode to 
 | `wait`     | waits for a bg process to complete                      |
 #### **15) COMPRESSING & ARCHIVING**
 **_'tar'_** is your buddy in most cases. **_'zip'_** is also a tool.
-tar is 
+tar is "**T**ape **AR**chive" -- classic. Output is called an *'archive'*, *'tar file'* or *'tarball'*
+
+Common args for tar, to see the contents of  the archive is **'-tvf '** while compressing is **'-cvf '** & while decompressing is **'-xvf '**
+-cvf = create, verbose, file to be written to
+-xvf  = extract, verbose, file to be extracted
+-tvf = content list, verbose, file to be seen
+Note : The 'v' is optional. Prefer '-tf ', '-cf ' and '-xf '. It's use case is to print on the terminal the files on which the operations is to be/being performed.
+Example : 
+`tar -cf my_arc.tar file1 file2 file3`
+`tar -tf my_arc.tar`
+`tar -xf my_arc.tar`
+
+**Compressing Files**
+To actually compress a file i.e to save size, you need to use something more than tar alone.
+Tar is basically lossless -- important but not space saver
+3 Major commands which use 3 different algos ->
+`bzip2` - uses `*.tar.bz2` -- slowest but smallest size
+`gzip` - uses `*.tar.gz` or `*.tgz` -- in the middle
+`compress`  - uses `*.tar.z` -- fastest but biggest file size
+
+**A) gzip**
+GNU zip. Most common. `gzip` to compress and `gunzip` to decompress. Not only for `.tar` files but also works for simple `.zip` files.
+$ > gzip _file-name.*_   (applies to any file that begins with this name with any file extension)
+$ > gunzip _file-name.*_
+
+**B) bzip2**
+Works in the same manner as `gzip` but has better compression ratios -- hence smaller file sizes. Very same - bzip2 to compress and bunzip2 to decompress
+$ > bzip2 _file-name.*_
+$ > bunzip2 _file-name.*_
+
+**C) Compress**
+Nothing impressive. Although, you can use gunzip with files that were compressed this way.
+$ > compress _file-name.*_
+$ > uncompress _file-name.*_
+
+**Bit-by-Bit Copies OR Physical Copies of Storage Devices**
+The **'dd'** command is the solution. Complete copy of the storage device. All you need is the path. It even copies the deleted files (because they aren't actually gone are they..)
+Syntax : `$ > dd if=inputFile of=outputFile`
+Example cases -> 
+Copying an entire 8 gig USB (usually mounted as **sdb**)
+`$ > dd if=/dev/sdb of=/root/flashCopy`
+Output : 
+`1257441=0 records in`
+`1257440+0 records out`
+`76843809280 bytes (7.6GB) copied, 1220.73s, 5.2 MB/s`
+
+This command has 2 important arguments -> **`noerror`** and **`bs`**
+noerror - continues the copy even if errors are encountered
+bs - is blocksize. Default is 512 bytes. Typically set it to the sector size of the device (4096 bytes in our case of a USB drive). Now we can write :
+`$ > dd if=/dev/sdb of=/root/flashcopy bs=4096 conv:noerror`
+
+#### **16) FILE SYSTEM & STORAGE DEVICE MANAGEMENT**
+`/dev` directory is for all attached devices. That includes media/hardware, (disks) physical ports, virtual host and even VGA adapter. This folder basically keeps a file for all sorts of hardware device that you may or may not use. Focus is usually `sda1/sda2/sda3` for HDDs and `sdb/sdb1` for USB devices. [In a laptop with only a NVME SSD, sda won't be there, instead we'll see 'nvme0n1p1/2/3' etc. USB drives however will surely take 'sdb' whenever they do attach.]
+Newer SATA HDDs (or even ISCSI) are `sda`. The 'a' denotes the first drive. 2 **HDDs** would be `sda` & `sdb` ; which might make the **USB** connected as `sdc`. HDDs get the lettering priority before USB. That's how Linux names them. Their respective internal partitions would subsequently be sda1, sda1, sdb1, sdb2, etc.
+Back in the day, Floppy Disks were mounted as `fd0` and IDE/E-IDE Hard Drives as `hd0`.
+
+**View Them**
+Use `$ > fdisk -l`
