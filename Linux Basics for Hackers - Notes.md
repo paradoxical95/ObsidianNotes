@@ -4,94 +4,96 @@ Located in -> /usr/bin and/or /usr/sbin
 #### **2) LINUX FILE SYSTEM**	
 	'/' -> The actual root system. The top most.
 Inside it -> 
-	/boot - Kernel image  
-	/home - user dir 
-	/proc - view of internal kernal data 
-	/dev - special device files 
-	/sbin - binaries 
-	/root - SuperUser's Home Dir (different from '/') 
-	/etc - Sys config 
-	/mnt - GenPurpose Mount point 
-	/sys - Kernel's view of HW 
-	/bin - also binaries 
-	/lib - libraries 
-	/usr -> /sbin, /bin, /lib (more of the same stuff) /media - for eject-able media	
+	`/boot` - Kernel image  
+	`/home` - user dir 
+	`/proc` - view of internal kernal data 
+	`/dev` - special device files 
+	`/sbin` - binaries 
+	`/root` - SuperUser's Home Dir (different from '/') 
+	`/etc` - Sys config 
+	`/mnt` - GenPurpose Mount point 
+	`/sys` - Kernel's view of HW 
+	`/bin` - also binaries 
+	`/lib` - libraries 
+	`/usr` -> /sbin, /bin, /lib (more of the same stuff) /media - for eject-able media	
 
 #### **3) cd Command**
-use '$ > cd ..' to move up 1 level  
-'$ > cd .. ..' for 2 levels & '$ > cd .. .. ..' for 3 levels and so on
+use `$ > cd ..` to move up 1 level  
+`$ > cd .. ..` for 2 levels & `$ > cd .. .. ..` for 3 levels and so on
 
 #### **4) Search-based commands**	
-$ > locate aircrack-ng -> finds all occurrences.
-$ > whereis aircrack-ng -> finds all BINARIES of the target passed (usually with man pages).
-$ > which aircrack-ng -> finds the binary file located in the PATH variable of the system.
+`$ > locate aircrack-ng` -> finds all occurrences.
+`$ > whereis aircrack-ng` -> finds all BINARIES of the target passed (usually with man pages).
+`$ > which aircrack-ng` -> finds the binary file located in the PATH variable of the system.
 $ > find -directory -option -targetExp -> finds literally everything.
-Eg: $ > find /etc -type f -name apache2 
+Eg: `$ > find /etc -type f -name apache2` 
 -- altho apache2.* will find all file extensions but first name as apache2
 Lastly, grep to filter 
-$ > ps aux | grep apache2 -> will filter from all auxilliary processes containing apache2	
+`$ > ps aux | grep apache2` -> will filter from all auxilliary processes containing apache2	
 
 #### **5) 'cat' is versatile**
-$ > cat file_name -> will spill the file contents. 
-$ > cat > file_name -> will let you write in it BUT WILL REPLACE ALL EXISTING DATA. 
-$ > cat >> file_name -> will actually let you append the text you enter.	
+`$ > cat _file-name_` -> will spill the file contents. 
+`$ > cat > _file-name_` -> will let you write in it BUT WILL REPLACE ALL EXISTING DATA. 
+`$ > cat >> _file-name_` -> will actually let you append the text you enter.	
 
 #### **6) Renaming doesn't exist in Linux**	
 So we use  
-	$ > mv newfile newfile2 -> to essentially rename the file	
+	`$ > mv newfile newfile2` -> to essentially rename the file	
 
 #### **7) REMOVING A DIRECTORY**	
-Only the directory : $ > rmdir
-When that fails  : $ > rm -r (recursively delete everything in it)
+Only the directory : `$ > rmdir`
+When that fails  : `$ > rm -r` (recursively delete everything in it)
 
 #### **8) TEXT MANIPULATION**	
 'head' and 'tail' :
-$ > head _file_name_ -> first 10 lines 
-$ > head -n _file_name_ -> n number of lines from the start
-$ > tail -> for bottom lines (+ specialized with a count)  
+`$ > head _file_name_` -> first 10 lines 
+`$ > head -n _file_name_` -> n number of lines from the start
+`$ > tail` -> for bottom lines (+ specialized with a count)  
 
-$ > nl _path_to_file_or_file_name_ -> will number all the lines.
+`$ > nl _path_to_file_or_file_name_` -> will number all the lines.
 // 'cat' can & should be clubbed with 'grep' as and when needed. 
-Eg: $ > cat snort.conf | grep output
+Eg: `$ > cat snort.conf | grep output`
 
 **Sed command** - for find and replace ->
-$ > sed s/search_term/replace_term/g path_to_filename > newfile_name 
+`$ > sed s/search_term/replace_term/g path_to_filename > newfile_name` 
 	-> 's/' will find the term, '/g' is for replacing globally. Rest is elementary.  
 	-> Removing the '/g' will only replace the first occurrence. 
 		Adding a number there can limit the number of occurrences to be changed. '/3' will only replace the first 3. 
-	Eg: sed s/mysql/MySQL/g /etc/snort/snort.conf > snort2.conf  
+	Eg: **`$ > sed s/mysql/MySQL/g /etc/snort/snort.conf > snort2.conf`**
 
-$ > more file_name -> offers a scroll-able page if the file is to big.  
-$ > less file_name -> "less is more" -- offers a filter to search for the term should you need to -- use the '/' key. Still scroll-able but with better functionality.	
+`$ > more _file-name_` -> offers a scroll-able page if the file is to big.  
+`$ > less _file-name_` -> "less is more" -- offers a filter to search for the term should you need to -- use the '/' key. Still scroll-able but with better functionality.	
 
 #### **9) NETWORKING**
 'loopback' addr -- same as 'localhost' = 127.0.0.1
-$ > iwconfig -> check for wireless adapter info -- good for getting power, the mode [monitor, managed, promiscuous] etc.
+`$ > iwconfig` -> check for wireless adapter info -- good for getting power, the mode [monitor, managed, promiscuous] etc.
 
 **Changing IP Addr :**
-	$ > ifconfig eth0 192.1688.181.155 
+	`$ > ifconfig eth0 192.1688.181.155` 
 		-> modifies what your router sees to redirect packets
 
 **Changing Netmask +/ Broadcast :**
-	$ > ifconfig eth0 192.168.181.155 netmask 255.255.0.0 broadcast 192.168.1.255
+	**`$ > ifconfig eth0 192.168.181.155 netmask 255.255.0.0 broadcast 192.168.1.255`**
 		-> Netmask is the subnet mask -- determines the portion of the IP Addr to the NW and which refers to the host. Here, first 2 octets (16 bits) represent the network and last 2 show the hosts within that network.
 		-> Broadcast is the addr used to send packets to all hosts on the same network segment. Default (bcz of subnet) would become 192.168.255.255 but here overridden to 192.169.1.155 -- Basically packets sent to this will be broad-casted on that specific sub-network.	
 
 **MAC Spoofing :**
 	Take down the interface, change the Addr, restart
-	$ > ifconfig eth0 down > ifconfig eth0 hw ether 00:11:22:33:44:55 > ifconfig eth0 up
+	`$ > ifconfig eth0 down` 
+	`$ > ifconfig eth0 hw ether 00:11:22:33:44:55` 
+	`$ > ifconfig eth0 up`
 
 **Assigning new IP via DHCP Server :**
 	Server runs of '*dhcpd'* - the daemon. Requested via '*dhclient'*. Requires a DHCP assigned IP addr. (Note : 'dhclient' is for Debian, will vary in other distros.)
-	$ > dhclient eth0 
+	`$ > dhclient eth0`
 		-> Here, DHCPDISCOVER req is sent by this command and then receives an offer from the DHCP i.e DHCPOFFER. Now, ifconfig will show a difft IP addr as given by the DHCP Server.
 
 **Manipulating DNS :**
 	Use 'dig' :
 		Directly pass-on the domain and add the 'ns' tag to make the domain as the nameserver itself. 'mx' will fetch the mail-exchange server.
-		$ > dig hackerarise.com ns 
+		`$ > dig hackerarise.com ns`
 		OR 
-		$ > dig hackerarise.com mx
+		`$ > dig hackerarise.com mx`
 		-- Some Linux servers use BIND (*Berkeley Internet Name Domain*)  which is just a fancy name for DNS. 
 
 **Changing your DNS Server :**
@@ -106,33 +108,33 @@ $ > iwconfig -> check for wireless adapter info -- good for getting power, the m
 #### **10) HANDLING SW PACKAGES**
 
 **Search for package in local repo:**
-	$ > apt-cache search _'keyword'_  
-		-> Eg: $ > apt-cache search **snort**
+	`$ > apt-cache search *keyword*`  
+		-> Eg: `$ > apt-cache search snort`
 
 **Install, Remove, Purge, Update, Upgrade :** 
-	$ > apt-get install --name--
-	$ > apt-get remove --name--
-	$ > sudo apt-get update
-	$ > sudo apt-get upgrade 
-	$ > apt-get purge --name--
+	`$ > apt-get install --name--`
+	`$ > apt-get remove --name--`
+	`$ > sudo apt-get update`
+	`$ > sudo apt-get upgrade` 
+	`$ > apt-get purge --name--`
 (purge removes the config as well)
 		or use a package manager like *'synaptic'* or *'gdebi'*  like a normie. 
 	
 **Adding Repos to Sources.list file** :
-	$ > mousepad /etc/apt/sources.list -> will open the list
+	`$ > mousepad /etc/apt/sources.list` -> will open the list
 		Categories : main (OSS), universe (community maintained OSS), multiverse (SW restricted by copyright), restricted (proprietary device drivers), backports (packages from later releases)
-		Format : "deb http:// ------   --package_name-- main non-free contrib" etc.
+		*Format : "deb http:// ------   --package_name-- main non-free contrib" etc.*
 
 #### **11) FILE DIRECTORIES & PERMISSION**
 r,w,x -> read, write and execute
 
 **Granting ownership :**
-$ > chown _username_   _file-path-name_  -> Provides the ownership of that file to that user.
-$ > chgrp _group-name_    _package-or-module-name_ -> Provides a user-group access to that module.
+`$ > chown _username_     _file-path-name_`  -> Provides the ownership of that file to that user.
+`$ > chgrp _groupname_   _package-or-module-name_` -> Provides a user-group access to that module.
 
 **Checking Permissions** :
 3 Methods
-A) $ > ls -l  _file-or-path-to-it_  -> will lay down the whole sheet. The type, permission on the file for owner/groups/users, number of links, the owner, size in bytes, creation/mod date & its name. 
+A) `$ > ls -l  _file-or-path-to-it_`  -> will lay down the whole sheet. The type, permission on the file for owner/groups/users, number of links, the owner, size in bytes, creation/mod date & its name. 
 	Eg: "drwxr-xr-x" vs "-rw-r--r--". First letter denotes directory if 'd' or file if empty dash. Followed by the permission values for 3 groups i.e owner then group then other_users. Hence we **observe 3 values at a time**. Dash means no permission ofc. 
 In '-rw-r--r--' -> File, owner has read/write, group and other users only have read permissions. 
 
@@ -145,57 +147,57 @@ B) There is a proper calculation done in Octal terms as well.
 	`110 : 6 : rw-`
 	`111 : 7 : rwx`
 Total RWX is 7. Since we have 3 sets of permissions, giving a full read+write+execute permission to everyone, for example, would look like ->
-$ > chmod 777 hashcat.hcstat
+`$ > chmod 777 hashcat.hcstat`
 
 C) UGO Syntax
 Here, '-' removes a permission, '+' adds and '=' sets a permission.
 Eg: Remove the write (w) permission from user on a file
-	$ > chmod u-w hashcat.hcstat -> Now -rw-r--r-- becomes -r-xr-xr--
+	`$ > chmod u-w hashcat.hcstat` -> Now -rw-r--r-- becomes -r-xr-xr--
 Or for user and other users at once
-	$ > chmod u+x, o+x hashcat.hcstat
+	`$ > chmod u+x, o+x hashcat.hcstat`
 Now, you can set execute permission for yourself on a newly downloaded tool/script bcz by default Linux won't set it
-	$ > chmod 766 some_new_tool   -> grants us (the owner) all permission including execute -- and everyone else only R/W permissions.
+	`$ > chmod 766 some_new_tool`   -> grants us (the owner) all permission including execute -- and everyone else only R/W permissions.
 
 **Masking can be done :**
-	$ > umask 007  -> set it so only the user and members of the user's group have permissions.
+	`$ > umask 007`  -> set it so only the user and members of the user's group have permissions.
 
 **Special Permissions :** 
 	SUID - set user ID & SGID - set group ID
 	**1) Granting Temp Root w/ SUID**
-		/etc/shadow contains all user's password -- requires root privileges to execute. SUID requires an additional bit before the permission bit. So 644 becomes 4644 i.e 
-		$ > chmod 4644 _file_name_ 
+		`/etc/shadow` contains all user's password -- requires root privileges to execute. SUID requires an additional bit before the permission bit. So 644 becomes 4644 i.e 
+		`$ > chmod 4644 _file_name_` 
 	**2) Granting the Root user's Group permissions SGID**
 		SGID works differently. Someone without execute permission can execute a file if the owner belongs to the group that has the permission to execute that file. When the bit is set on a directory -- t**he ownership of new files created in that directory goes to the directory's creator's group rather than the file creator's group.** 
-		$ > chmod 2644 _file_name_ 
+		`$ > chmod 2644 _file_name_` 
 		[SGID bit is represented by 2 and SUID uses 4]
 
 **Privilege Escalation :**
-One way is by exploiting the **SUID Bit** in the system. Eg: Scripts that need to change the password usually come with the SUID bit set already. Use that to gain temporary root priv - then do something shady like getting the file at /etc/shadow.
+One way is by exploiting the **SUID Bit** in the system. Eg: Scripts that need to change the password usually come with the SUID bit set already. Use that to gain temporary root priv - then do something shady like getting the file at `/etc/shadow.`
 To proceed -> 
 Use commands like 'find' to find the files and see their bit. Example : 
-	$ > find / -user root -perm -4000
+	`$ > find / -user root -perm -4000`
 Kali now starts at the top of the filesystem (because of '/')  and looks everywhere below this -- the file that are owned by 'root' & specified with 'user root' + have the SUID bit set (-perm -4000). 
 
 The above command will give an output like ->
-	/usr/bin/chsh ; /usr/bin/gpasswd; /usr/bin/pkexec; /usr/bin/sudo; /usr/bin/passwd,.. etc. 
+	`/usr/bin/chsh ; /usr/bin/gpasswd; /usr/bin/pkexec; /usr/bin/sudo; /usr/bin/passwd,.. etc.` 
 
 Navigating to this directory, and observing, let's say "sudo" using ls-alh, you will see ->
-	-rwsr-xr-x   root   root    140944   _date_  sudo
+	`-rwsr-xr-x   root   root    140944   _date_  sudo`
 Here, the 's' in place of 'x' determines the SUID bit. Logically, anyone who runs the _sudo_ file has the priv of a root user -- which becomes an attack vector IF an application -- which needs access to /etc/shadow file to successfully complete their task -- can be hijacked. 
 
 #### **12) PROCESS MANAGEMENT**
 To view - use -> 
-$ > ps
+`$ > ps`
 Every process ofc has a PID or process ID. 
 You can use -> 
-$ > kill _PID_value_  to kill any process.
+`$ > kill _PID_value_`  to kill any process.
 Issue ? The _'ps'_ command won't give you much info either ways. We have another command for that -> 
-	$ > ps aux
+	`$ > ps aux`
 It shows the USER, PID, %CPU, VSZ, RSS, TTY, STAT, START, TIME & COMMAND.
 
 **Filtering by Process Name**
 For instance, try running _msfconsole_ command to have its process running. Then use _grep_ to filter it. This way you can filter all the processes running/attached to it.
-	$ > ps aux | grep msfconsole
+	`$ > ps aux | grep msfconsole`
 You might see a few, such as the attached DB running, the ruby script, etc, and finally the program itself. 
 We also have commands like **"_top_"** to monitor the processes sorted by their resource usage. It's active i.e refreshes on its own (every 3-4 seconds)
 
@@ -208,11 +210,11 @@ Unsurprisingly, you can alter the priority by using the _"renice"_ command.
 	**renice is absolute**. Requires  a fixed value b/w -20 and +19. BUT it sets the process to that level, cuz you've altered the deal and it prays you don't alter it any further. It also requires the PID. 
 
 Examples : 
-$ > nice -n 10 /bin/some_slow_process  [lowers it]
+`$ > nice -n 10 /bin/some_slow_process`  [lowers it]
 or 
-$ > nice -n -9 /bin/some_slow_process [improves it]
+`$ > nice -n -9 /bin/some_slow_process` [improves it]
 and
-$ > renice 20 6996 
+`$ > renice 20 6996`
 [6996 is the PID of some_slow_process, and 20 is setting it]
 NOTE: 'top' can also be used to alter these values.
 
@@ -220,7 +222,7 @@ NOTE: 'top' can also be used to alter these values.
 _'kill'_ command is your friend. Just pass the PID and pass the required kill signal. There are 64 of them. Default is SIGTERM (n=15) i.e  termination. Ofc they are optional. Use them as a flag arg while using kill command.
 $ > kill -n _PID_ 
 Example :
-$ > kill -9 6887
+`$ > kill -9 6887`
 Signal Interrupts for kill ->
 `SIGHUP (1) : Hangup - stops and then restarts with the same PID`
 `SIGIN (2) : Interrupt - weak kill signal not guaranteed to work but does work mostly.`
@@ -230,19 +232,19 @@ Signal Interrupts for kill ->
 Basically : to restart a process : use '-1' ; for zombie/malicious : use '-9'
 
 **Running Processes in the Background**
-Everything runs from within the shell and the shell waits for the task/command to run/finish. It waits for this whole sequence -- hence busy & won't allow any new commands. To prevent this we can essentially detach the process from the shell. Use the _'&'_ right after the task.
-$ > mousepad _someDoc_  **&**
+Everything runs from within the shell and the shell waits for the task/command to run/finish. It waits for this whole sequence -- hence busy & won't allow any new commands. To prevent this we can essentially detach the process from the shell. Use the **_'&'_** right after the task.
+`$ > mousepad _someDoc_ &` 
 
 **Moving to foreground**
 Use the _'fg'_ command followed by the PID. Fetch the PID if needed.
-$ > fg 1273
+`$ > fg 1273`
 
 **Process Scheduling**
 Either use _'at'_ or _'crond'_. 
 'at' is useful for scheduling a job to run once at some point in the future -- execute 1 or many commands in the future, passed with time as argument.
-Eg: $ > msfconsole at 7:20PM June 13
-OR $ > msfconsole at now + 20 minutes
-// If you just write 'at' followed by a time, then the "at>" console will open asking you to map the file/process path for it. 
+Eg: `$ > msfconsole at 7:20PM June 13`
+OR `$ > msfconsole at now + 20 minutes`
+// If you just write 'at' followed by a time, then the " **at>** " console will open asking you to map the file/process path for it. 
 
 'crond' is best for scheduling tasks to occur everyday/week/month etc.  [SEPARATE CHAPTER LATER]
 
@@ -256,11 +258,11 @@ OR
 KEY=value1:value2:value3...
 
 To see the Env-V's, use 
-$ > env
+`$ > env`
 
 **View All**
 To see vars of all types (including shell, local + shell functions) use "set" (and preferably filter it with 'more' to have a scroll-able feed)
-$ > set | more
+`$ > set | more`
 OUTPUT :
 `BASH=/bin/bash`
 `BASHOPTS=check........:.....`
@@ -269,32 +271,32 @@ OUTPUT :
 ....etc
 
 **Grep can be used to filter**
-$ > set | grep HISTSIZE
+`$ > set | grep HISTSIZE`
 HISTSIZE is one such var that contains the maximum number of commands your command history file will store. It does not store the commands themselves just the number of them that can be stored.
 
 **Modify these vars**
 Simply set them like usual. Example: 
-$ > HISTSIZE=0
+`$ > HISTSIZE=0`
 
 **Making Var Changes Permanent**
 These modifications are not permanent, when done in the terminal this way. We need to _'export'_ those values from the shell to the system. Since these vars are just strings, you can simply backup the contents in a text file before using the 'export' command.
 
 For a universal backup, use the _'set'_ command ->
-$ > set> ~/valueOfAllVarsOn011125.txt
+`$ > set> ~/valueOfAllVarsOn011125.txt`
 
 For singled out variables ->
 `$ > echo $HISTSIZE> ~/valueofHISTSIZE.txt` 
 then set the new value (histsize default 1000)
-$ > HISTSIZE=0 
+`$ > HISTSIZE=0` 
 then export globally
-$ > export HISTSIZE
+`$ > export HISTSIZE`
 
 **Changing the Shell Prompt**
-Might seem like a cool trick but useful if you have multiple shells on different machines. That var is "PS1". Has 3 flags -> \u for current user's name, \h for hostname and \w for pwd name.
-Again, same logic. You can use the _'echo $PS1'_ command to fetch the current value and save it somewhere before modifying how your terminal looks. Same logic to modify this var as well and then _'export PS1'_ it to be seen globally.
+Might seem like a cool trick but useful if you have multiple shells on different machines. That var is "**PS1**". Has 3 flags -> \u for current user's name, \h for hostname and \w for pwd name.
+Again, same logic. You can use the **`echo $PS1`** command to fetch the current value and save it somewhere before modifying how your terminal looks. Same logic to modify this var as well and then **`export PS1`** it to be seen globally.
 
 **Changing your PATH**
-PATH variable guides the system to look for commands like cd,ls, echo etc. The directories that has these commands (or even the new ones) must be added to your path else they'll be shown 'not found' even though you have them. Default stuff is mostly in /usr/local/sbin and /usr/local/bin. Each location is separated by ' : ' respectively. 
+PATH variable guides the system to look for commands like cd,ls, echo etc. The directories that has these commands (or even the new ones) must be added to your path else they'll be shown 'not found' even though you have them. Default stuff is mostly in `/usr/local/sbin` & `/usr/local/bin`. Each location is separated by ' : ' respectively. 
 Pasting my output ->
 `/home/paradoxical/.local/bin:/usr/local/sbin:/usr/sbin:/sbin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games:/home/paradoxical/.dotnet/tools`
 
@@ -304,7 +306,7 @@ Say a new tool is somewhere on your drive, which is not /bin and /sbin, simply a
 You can ofc verify by seeing the PATH value and trying to run the command directly on the terminal. 
 **NOTE :** Don't add too many directories in this var, it can hog the resources if it needs to locate a lot of directories for one command.
 **CAUTION :** Make sure to APPEND and not OVERWRITE the variable. 
-**Using** 'PATH=$PATH:' and **not** 'PATH=' is super important. 
+**Using** `'PATH=$PATH:....'` and **not** `'PATH=.....'` is super important. 
 Something like ' $ > **PATH=**/home/kali/Docs/newHackingTool' will simply overwrite all the contents in this var. Best to save its contents somewhere.
 
 **Creating a User-Defined Variable**
@@ -340,7 +342,7 @@ For more functionality, 'echo' can be used like `cout<<` for outputs and 'read' 
 `echo "Hey" $name "!. Hope you're doing well..."`
 
 **Simple Scanner**
-First we'll make a basic script that uses 'nmap' with a simple TCP scan mode to scan for ports 3306 i.e MySQL services. We send the on-screen output to /dev/null and then outputting the scan results to a file using the -o flag but with a 'G' to make it grep-able.
+First we'll make a basic script that uses 'nmap' with a simple TCP scan mode to scan for ports **3306** i.e MySQL services. We send the on-screen output to /dev/null and then outputting the scan results to a file using the -o flag but with a 'G' to make it grep-able.
 `#! /bin/bash`
 `# This script is designed to find hosts with MySQL installed on local network for testing`
 `nmap -sT 192.168.1.0/24 -p 3306 >/dev/null -oG MySQLscan`
@@ -417,18 +419,18 @@ Tar is basically lossless -- important but not space saver
 
 **A) gzip**
 GNU zip. Most common. `gzip` to compress and `gunzip` to decompress. Not only for `.tar` files but also works for simple `.zip` files.
-$ > gzip _file-name.*_   (applies to any file that begins with this name with any file extension)
-$ > gunzip _file-name.*_
+`$ > gzip file-name.*`   (applies to any file that begins with this name with any file extension)
+`$ > gunzip file-name.*`
 
 **B) bzip2**
 Works in the same manner as `gzip` but has better compression ratios -- hence smaller file sizes. Very same - bzip2 to compress and bunzip2 to decompress
-$ > bzip2 _file-name.*_
-$ > bunzip2 _file-name.*_
+`$ > bzip2 file-name.*`
+`$ > bunzip2 file-name.*`
 
 **C) Compress**
 Nothing impressive. Although, you can use gunzip with files that were compressed this way.
-$ > compress _file-name.*_
-$ > uncompress _file-name.*_
+`$ > compress file-name.*`
+`$ > uncompress file-name.*`
 
 **Bit-by-Bit Copies OR Physical Copies of Storage Devices**
 The **'dd'** command is the solution. Complete copy of the storage device. All you need is the path. It even copies the deleted files (because they aren't actually gone are they..)
@@ -442,8 +444,8 @@ Output :
 `76843809280 bytes (7.6GB) copied, 1220.73s, 5.2 MB/s`
 
 This command has 2 important arguments -> **`noerror`** and **`bs`**
-noerror - continues the copy even if errors are encountered
-bs - is blocksize. Default is 512 bytes. Typically set it to the sector size of the device (4096 bytes in our case of a USB drive). Now we can write :
+**noerror** - continues the copy even if errors are encountered
+**bs** - is blocksize. Default is 512 bytes. Typically set it to the sector size of the device (4096 bytes in our case of a USB drive). Now we can write :
 `$ > dd if=/dev/sdb of=/root/flashcopy bs=4096 conv:noerror`
 
 #### **16) FILE SYSTEM & STORAGE DEVICE MANAGEMENT**
@@ -452,4 +454,60 @@ Newer SATA HDDs (or even ISCSI) are `sda`. The 'a' denotes the first drive. 2 **
 Back in the day, Floppy Disks were mounted as `fd0` and IDE/E-IDE Hard Drives as `hd0`.
 
 **View Them**
-Use `$ > fdisk -l`
+Use `$ > fdisk -l
+It lists all the partitions.
+It will show the proper type i.e HPFS, NTFS, exFAT, etc which are not Linux native file systems. Linux uses ext2, ext3 and ext4. 
+
+**Character & Block Devices**
+/dev directory will have device files whose naming will start with 'c' or 'b' - meaning Character or Block devices.
+Character devices are external i.e ones that interact with the system by sending and receiving data char-by-char such as Mice or Keyboard.
+Block devices are the ones which communicate in blocks of data & include devices like HDD and DVDs. They require higher-speed data throughput & therefore send/receive data in
+in blocks. Our major focus is Block devices for further commands
+
+**List Block Devices Info**
+Use `$ > lsblk`
+Very similar to `fdisk -l` but it also displays devices with multiple partitions in a kind of tree + showing each device with partitions as branches + does not require root priv. This will also list the mount points (denoted by '/').
+My output :
+`NAME        MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS`
+`nvme0n1     259:0    0 238.5G  0 disk` 
+`├─nvme0n1p1 259:1    0    25G  0 part /media/paradoxical/DataDrive`
+`├─nvme0n1p2 259:2    0  94.2G  0 part` 
+`├─nvme0n1p3 259:3    0   977M  0 part /boot/efi`
+`├─nvme0n1p4 259:4    0 112.1G  0 part /`
+`└─nvme0n1p5 259:5    0   6.2G  0 part [SWAP]`
+
+**Mounting and Unmounting**
+The term itself comes from the days of storage tapes. Every device needs a mount point i.e some directory to be mounted to. 2 main are `/mnt` and `/media` altho you can use any directory. External devices pick /media and internal ones are for /mnt.
+
+Make sure the directory you mount to (/mnt or /media) is  empty or else after mounting the sub-directories will get over-written. And as always, all the file-systems info is stored in **/etc/fstab.**
+Examples ->
+`$ > mount /dev/sdb1/    /mnt`
+`$ > mount /dev/sdc1/    /media`
+`$ > umount /dev/sdb1`
+
+**Monitoring Filesystems**
+For simple stuff, use 'disk free' 
+`$ > df` -> gives us basic info on any HDD/Mounted device like CD/DVD/Flash Drives. Without any args, it fetches the first drive of the systems (usually `sda` but now it might be `nvme0n1p1`). For a specific drive, use `$ > df sdb`.
+My output for reference : 
+`Filesystem     1K-blocks     Used Available Use% Mounted on`
+`udev             7967092        0   7967092   0% /dev`
+`tmpfs            1615372     1668   1613704   1% /run`
+`/dev/nvme0n1p4 115142704 49942804  59304732  46% /`
+`tmpfs            8076856    16136   8060720   1% /dev/shm`
+`efivarfs             184      121        59  68% /sys/firmware/efi/efivars`
+`tmpfs               1024        0      1024   0% /run/credentials/systemd-journald.service`
+`/dev/nvme0n1p1  26214396  6908512  19305884  27% /media/paradoxical/DataDrive`
+`/dev/nvme0n1p2  98813948    69000  98744948   1% /media/paradoxical/MoreData`
+`tmpfs            8076856        8   8076848   1% /tmp`
+`/dev/nvme0n1p3    998480    27076    971404   3% /boot/efi`
+`tmpfs               1024        0      1024   0% /run/credentials/getty@tty1.service`
+`tmpfs            1615368      120   1615248   1% /run/user/1000`
+
+**Checking for Errors**
+File-system check or 'fsck', will check for errors, repair the damage if possible or else puts the bad area into  a bad-blocks table to mark it as bad. For this command, you need to specify the file-system type of the device file to check (default is ext2).
+NOTE : For **fsck** to work, you NEED to unmount that drive first (by running `$ > umount _device-path_` )
+`$ > fsck -p  /dev/sdb1`
+Here, the '-p' flag will automatically repair any problems with the device. 
+
+#### **17) LOGGING SYSTEM**
+Log files are very important. For all sorts of users. 
