@@ -454,7 +454,7 @@ Newer SATA HDDs (or even ISCSI) are `sda`. The 'a' denotes the first drive. 2 **
 Back in the day, Floppy Disks were mounted as `fd0` and IDE/E-IDE Hard Drives as `hd0`.
 
 **View Them**
-Use `$ > fdisk -l
+Use `$ > fdisk -l`
 It lists all the partitions.
 It will show the proper type i.e HPFS, NTFS, exFAT, etc which are not Linux native file systems. Linux uses ext2, ext3 and ext4. 
 
@@ -510,4 +510,91 @@ NOTE : For **fsck** to work, you NEED to unmount that drive first (by running `$
 Here, the '-p' flag will automatically repair any problems with the device. 
 
 #### **17) LOGGING SYSTEM**
-Log files are very important. For all sorts of users. 
+Log files are very important. For all sorts of users. All activity trail is logged, irrespective of the user doing that activity. As a grey hat, your purpose is to hide/destroy/scramble the evidence. 
+First we focus on the logging service daemon.
+
+**Logging Daemon**
+Actual daemon was **`syslogd`** but it has 2 variations, `rsyslog` and `syslog-ng`. **Debian uses rsyslog so that's our focus.**
+Use `$ > locate rsyslog` to find files on it.
+Output would be huge but what concerns us is :
+`/etc/rsyslog.conf`
+`/etc/rsyslog.d`
+`/etc/logcheck/ignore.d.server/rsyslog`
+`/etc/logrotate.d/rsyslog`
+`/etc/logrotate.conf`
+
+**rsyslog Config File**
+Managed + configured by a plaintext file, located in the `/etc` directory, and for us it is `/etc/rsyslog.conf`.
+Opening it in mousepad will reveal us a lot of modules for various logging purposes. (imuxsock, imklog, immark, UDP, TCP etc). Focus is around line 50 i.e the **Rules Section**.
+
+**rsyslog Logging Rules**
+Determines what kind of information is logged, what programs have their messages logged and where is that log stored. Line 50 in the config file reveals : 
+Format  = `facility.priority       action`
+`# Log anything besides private authentication messages to a single log file`
+`*.*;auth,authpriv.none		-/var/log/syslog`
+`# Log commonly used facilities to their own log file`
+`auth,authpriv.*			/var/log/auth.log`
+`cron.*				-/var/log/cron.log`
+`kern.*				-/var/log/kern.log`
+`mail.*				-/var/log/mail.log`
+`user.*				-/var/log/user.log`
+`# Emergencies are sent to everybody logged in.`
+`*.emerg				:omusrmsg:*`
+[In my output above, statements like daemon -/var/log/daemon.log or mail logging info section was missing.]
+
+`facility` refers to the program whose messages are being logged, `priority` determines what kind of messages are being logged and `action` references the location of where the log will be sent.
+
+Facility is : 
+`auth`/`authpriv` - Sec/auth messages
+`cron` - clock daemons
+`daemon` - other daemon
+`kern` - kernel messages
+`lpr` - printing system
+`mail` - mail system
+`user` - generic user-level messages
+`*` - means all facilities
+
+priority is : 
+`debug`, `info`, `notice, warning*, warn*, error*, err*, crit, alert, emerg*, panic`*
+(ones in `*` are deprecated. 'debug' has lowest priority and 'panic' has highest. Messages classified as 'alert' will stay on that priority and won't drop down to any lower level).
+
+action is : filename and location of where the logs should be sent. Usually it is `/var/log` directory with a filename that describes the facility generated. Eg: logs for '`auth`' facility would be sent to `/var/log.auth.log`.
+
+Examples : 
+`mail.* /var/log/mail`  - log mail events of all (* ) priorities to /var/log/mail
+`kern.crit /var/log/kernel` -  log kernel events of critical priority or higher to /var/log/kernel
+`*.emerg *`  - log all events of the emergency priority to all logged on users.
+
+**Automatically Cleaning Up Logs with LOGROTATE**
+Even log file takes space. Don't delete them for too long and they take up space. Delete them too often and you won't have logs for investigation. **"logrotate"** determines the balance b/w these values. It simply means to archive the logs in a timely manner. Old files are replaced with new files. The config file is located in `/etc/logrotate.conf` text file. A cron job already handles the schedule for logrotate. 
+Opening this file we see a few 'variables' : 
+`weekly` - unit of time the rotate number refers to
+`rotate` - the number working on the unit specified
+`create` - create new empty log files after rotating the old ones
+(optionally/commented) `compress` - if you want to
+`include` - the directory where the log rotate info is dropped
+
+Sample values :
+`weekly`
+`rotate 4` = rotate logs every 4 weeks
+`create`
+`include /etc/logrotate.d`
+
+At the end of each rotation period, log files are renamed and pushed toward the end of the chain of logs as a new log file is created, replacing the current log file.
+Eg: `/var/auth.log` becomes `/var/auth.log1` then `/var/log/auth.2`, so on up until auth.4, post which instead of auth.5 won't be created as the last one is rotated and a new one is created.
+Try `$ > locate /var/log/auth.log` and notice only 4 files are visible.
+
+**Remaining Stealthy**
+2 ways - Removing Evidence and Disable logging itself. 
+**A) Removing Evidence**
+You can ofc use 'rm' and delete all the files, but there's a better method, plus there can be gaps in the log files which might look suspicious. Instead use -
+`$ > shred -f -n 10 /var/log/auth.log.*`
+This command basically scrambles the data by re-writing inside it many times. Simply deleting them, would cause them to be recovered by some pro person. Simply scramble them and delete them.
+Here, `-f` flag stands for changing the file permission to allow over-writing. `-n` stands for the over-writing count. In our example, the file is being overwritten 10 times. The '`*` ' symbol will find all occurrences of the file + find the ones made by 'logrotate' as well.
+
+**B) Disabling Logging**
+Requires root privileges. Disable it just like any other services' daemon.
+`$ > service rsyslog stop`
+(stop, start, restart are the args)
+
+#### **18) USING & ABUSING SERVICES**
