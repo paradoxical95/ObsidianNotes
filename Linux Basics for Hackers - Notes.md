@@ -97,7 +97,7 @@ Eg: `$ > cat snort.conf | grep output`
 		-- Some Linux servers use BIND (*Berkeley Internet Name Domain*)  which is just a fancy name for DNS. 
 
 **Changing your DNS Server :**
-	Edit a file stored in '/etc/resolv.conf'. There you will see the domain, search & nameserver fields. Swap the values here to switch your DNS server.
+	Edit the file  '/etc/resolv.conf'. There you will see the domain, search & nameserver fields. Swap the values here to switch your DNS server.
 	Other method to do the same (although this cleanly overwrites the file's content) -> 
 		`$ > echo "nameserver 8.8.8.8" > /etc/resolv.conf`
 
@@ -181,7 +181,7 @@ Kali now starts at the top of the filesystem (because of '/')  and looks everywh
 The above command will give an output like ->
 	`/usr/bin/chsh ; /usr/bin/gpasswd; /usr/bin/pkexec; /usr/bin/sudo; /usr/bin/passwd,.. etc.` 
 
-Navigating to this directory, and observing, let's say "sudo" using ls-alh, you will see ->
+Navigating to this directory, and observing, let's say "sudo", then using ls-alh, you will see ->
 	`-rwsr-xr-x   root   root    140944   _date_  sudo`
 Here, the 's' in place of 'x' determines the SUID bit. Logically, anyone who runs the _sudo_ file has the priv of a root user -- which becomes an attack vector IF an application -- which needs access to /etc/shadow file to successfully complete their task -- can be hijacked. 
 
@@ -203,7 +203,7 @@ We also have commands like **"_top_"** to monitor the processes sorted by their 
 
 **Managing Processes**
 We can alter the affinity/priority of any process by using the _"nice"_  command (by passing a numeric value to its argument '-n'). Kernel always has the final say, we're just suggesting. The value ranges from -20 to +19. 
-Sadly, **HIGH value means LOW priority and vice versa**. So -20 is most likely to receive priority, 0 is default ofc, and +19 is least likely. Usually, any process inherits the _nice_ value of its parent process.
+Sadly, **the higher the +ve value, the lower is the priority and vice versa**. So -20 is most likely to receive priority, 0 is default ofc, and +19 is least likely. Usually, any process inherits the _nice_ value of its parent process.
 Unsurprisingly, you can alter the priority by using the _"renice"_ command. 
 	THERE IS A DIFFERENCE !! 
 	**nice is relative**. Its adds/subtracts the priority value given what you pass to it. A process with a priority of 15, when asked 'nicely' to be -10 will have a priority of 5 now. OR when asked to be +5, it will now be 20. 'nice' can use the process via its location as well.
@@ -225,7 +225,7 @@ Example :
 `$ > kill -9 6887`
 Signal Interrupts for kill ->
 `SIGHUP (1) : Hangup - stops and then restarts with the same PID`
-`SIGIN (2) : Interrupt - weak kill signal not guaranteed to work but does work mostly.`
+`SIGINT (2) : Interrupt - weak kill signal not guaranteed to work but does work mostly.`
 `SIGQUIT (3) : Quit/Core dump - terminates but saves the process info in memory + inside pwd.` 
 `SIGKILL (9) : absolute kill signal. Forces the process to stop by sending the process's resources to a special device -- /dev/null`
 
@@ -282,7 +282,7 @@ Simply set them like usual. Example:
 These modifications are not permanent, when done in the terminal this way. We need to _'export'_ those values from the shell to the system. Since these vars are just strings, you can simply backup the contents in a text file before using the 'export' command.
 
 For a universal backup, use the _'set'_ command ->
-`$ > set> ~/valueOfAllVarsOn011125.txt`
+`$ > set> ~/valueOfAllVarsToday.txt`
 
 For singled out variables ->
 `$ > echo $HISTSIZE> ~/valueofHISTSIZE.txt` 
@@ -519,7 +519,7 @@ Use `$ > locate rsyslog` to find files on it.
 Output would be huge but what concerns us is :
 `/etc/rsyslog.conf`
 `/etc/rsyslog.d`
-`/etc/logcheck/ignore.d.server/rsyslog`
+`-------`
 `/etc/logrotate.d/rsyslog`
 `/etc/logrotate.conf`
 
@@ -544,7 +544,7 @@ Format  = `facility.priority       action`
 
 `facility` refers to the program whose messages are being logged, `priority` determines what kind of messages are being logged and `action` references the location of where the log will be sent.
 
-Facility is : 
+`facility` is : 
 `auth`/`authpriv` - Sec/auth messages
 `cron` - clock daemons
 `daemon` - other daemon
@@ -554,11 +554,11 @@ Facility is :
 `user` - generic user-level messages
 `*` - means all facilities
 
-priority is : 
+`priority` is : 
 `debug`, `info`, `notice, warning*, warn*, error*, err*, crit, alert, emerg*, panic`*
 (ones in `*` are deprecated. 'debug' has lowest priority and 'panic' has highest. Messages classified as 'alert' will stay on that priority and won't drop down to any lower level).
 
-action is : filename and location of where the logs should be sent. Usually it is `/var/log` directory with a filename that describes the facility generated. Eg: logs for '`auth`' facility would be sent to `/var/log.auth.log`.
+`action` is : filename and location of where the logs should be sent. Usually it is `/var/log` directory with a filename that describes the facility generated. Eg: logs for '`auth`' facility would be sent to `/var/log.auth.log`.
 
 Examples : 
 `mail.* /var/log/mail`  - log mail events of all (* ) priorities to /var/log/mail
@@ -596,5 +596,21 @@ Here, `-f` flag stands for changing the file permission to allow over-writing. `
 Requires root privileges. Disable it just like any other services' daemon.
 `$ > service rsyslog stop`
 (stop, start, restart are the args)
-
+NOTE : Disabling `rsyslog` will also make a note in the log file in `var/log/syslog` - that the service was stopped
 #### **18) USING & ABUSING SERVICES**
+Anything running in bg is service. Many exist. Our focus is : Apache Web Server, OpenSSH, MySQL & PostgreSQL.
+First, remembering how to handle services. Start, stop, restart. Example : 
+`$ > service SERVICENAME start`
+`$ > service SERVICENAME stop`
+`$ > service SERVICENAME restart`
+
+**Creating an HTTP Web Server w/ Apache**
+Typing `$ > sudo service apache2 start` will start the server. 
+Going to `http://localhost/` will open the default apache landing page. The HTML for this can be changed by editing the `index.html` file located at `/var/www/html`. Make sure to `sudo` the mousepad command to overwrite the html file.
+
+**OpenSSH & R-Pi Spy**
+Requires a R-Pi. Author used R-Pi 2 + the camera module. Will revisit this section when I'll buy a R-Pi 5. Learning about SSH is shallow here. 
+`$ > sudo service ssh start` is to be enabled/done inside the R-Pi. 
+Then from your Kali installation, use `$ > ssh pi_username@192.168....` followed by the password you set on the R-Pi. Rest is irrelevant as of yet.
+
+**Extracting Info from MySQL DB**
