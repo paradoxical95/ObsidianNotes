@@ -673,3 +673,45 @@ Then check status by
 If it's not connected, the output will be `[*] postgresql selected, no connection` instead.
 
 #### **19) BECOMING SECURE & ANONYMOUS**
+Everyone is behind your ass. Simple as that. You are the commodity if the service is free.
+When you send a request the packet is tracked either ways. It contains the IP Addr of the source and destination -- cuz packet knows where its going and where it came from. Literal hopping of this packet is tracked. That's how websites know who you are when you come back.
+`$ > traceroute google.com` will show you how the packet hops through many servers that google owns.
+
+**TOR**
+Savior. Decentralized. Works on top of all the TOR Routers established worldwide. A separate network. At each hop, the info is encrypted then decrypted by the next hop when it's received -- this way, each packet only contains info about only the previous hop and not the IP Addr of the origin & the website owner can only see the IP of the last router that sent the traffic. TOR can be slow that's the issue. Another issue? TOR has been broken by NSA so there's a good chance you're surfing over their routers + they use a method called 'traffic correlation' -- which looks for patterns to break TOR's anonymity. You are safe from corps like Google but not from NSA/FBI. 
+
+**Proxy Servers**
+When you have a middleman b/w your connection, it becomes a proxy. The traffic adopts the IP Addr of the proxy(/ies) when you surf through them. Accountability shifted to the proxies and not the originating IP (i.e you). To make everyone else's life difficult, just use "proxy-chains" - a tool that literally configures proxies for your local machine & comes pre-installed in Kali. Just configure it once and use this tool before you run any application/tool which involves data coming from your machine such as firefox browser or a Nmap scan. 
+Example : 
+`$ > proxychains nmap -sS -Pn IP_ADDR` 
+OR
+`$ > proxychains firefox website-domain-name-here`
+
+To configure, visit `/etc/proxychains4.conf` [Author mentions `proxychains.conf` which is replaced with `proxychains4.conf`]. This config file has a lot of values, some active, some inactive -- all decided by what is commented and what isn't. What matters to us is :
+`[ProxyList]`
+`# add proxy here`
+`# meanwhile`
+`# defaults set to tor`
+`socks4 127.0.0.1 9050`
+
+Replace your proxy values here. You can buy premium ones or get some for free but remember the tradeoff. The format remains the same -> `type   IP-Add   port`
+Example : `socks4   114.134.186.12   22020`
+Make sure to comment the default localhost proxy value (handled by TOR) and write your own. Now : 
+`[ProxyList]`
+`# add proxy here`
+`socks4  114.134.186.12  22020`
+`# meanwhile`
+`# defaults set to tor`
+`# socks4 127.0.0.1 9050`
+
+Tip : You can add multiple proxies here, essentially making a chain. Chaining is sequential but automatic if proxychains detect multiple values here in this space. 
+For dynamic chaining, make sure to un-comment the `dynamic_chain` variable in the config file while comment out `strict_chain`. Dynamic is better as it auto switches if one proxy is down/not-responding.
+Lastly, Random Chaining can also be done. Kinda like Dynamic Chaining but picks the proxies randomly. Simply **comment out** `dynamic_chain`, `strict_chain` & **un-comment** `random_chain` and set `chain_len` to something like `chain_len = 3`.
+**Trade-off ? Latency.** 
+All depends on how good your proxies are. 
+
+**VPN and Encrypted Mail**
+Self-explanatory. Buy the good VPN you can afford (ProtonVPN) and try to use ProtonMail. A VPN that offers proper tunneling and actively fights the bad-laws is your go-to VPN.
+
+#### **20) WIRELESS NETWORKS**
+Understanding and Inspecting them. 
