@@ -614,3 +614,62 @@ Requires a R-Pi. Author used R-Pi 2 + the camera module. Will revisit this secti
 Then from your Kali installation, use `$ > ssh pi_username@192.168....` followed by the password you set on the R-Pi. Rest is irrelevant as of yet.
 
 **Extracting Info from MySQL DB**
+First start the service, 
+`$ > sudo service mysql start`
+Next, authenticate.
+`$ > mysql -u root -p`  -- as this was dictated by the author. It won't work. Instead, go with :
+`$ > sudo mysql`
+After that, most probably a `MariaDB [(none)] >` prompt will open. MariaDB is the true open source fork of MySQL, detached from Oracle. Now in this prompt, you can simply type the SQL queries like it's 2017. Also, semicolons are relevant here, don't forget. 
+Running `MariaDB [(none)] > show databases;` -- will print all 4 default DBs. 2 are administrative (the 'schemas'), one is 'sys' and the last is 'mysql' on which you can experiment for now. 
+`MariaDB [(none)] > select mysql;` -- will select it. 
+And the prompt will become
+`MariaDB [(mysql)] >`  -- now you can exfiltrate data as you want. 
+
+Optionally - you can change the user password for root on MySQL by using :
+`MariaDB [(mysql)] > update user set password = PASSWORD("12345678") wheere user = 'root'; `
+
+Author added a section, wherein he connects to a different DB on the local network.
+Can be done via `$ > mysql -u root -p 192.168.1.101` which will again prompt for a password. Then he simply connects to a DB, conveniently named 'creditcardnumbers'. 
+`MariaDB [(creditcardnumbers)] > show tables;`
+Using that, we observe a table named 'cardnumbers'. We use `MariaDB [(mysql)] > describe cardnumbers; ` to observe the table, which has field like Address, Name, City, State, etc. Then we use `MariaDB [(creditcardnumbers)] > SELECT * FROM cardnumbers;` to basically view everything all at once. Now export it how you want.
+
+**PostgreSQL with Metasploit**
+If not installed, then install it. Post which, start the service by :
+`$ > sudo service postgresql  start`
+For this exercise, we need Metasploit, which cab be run via `$ > sudo msfconsole` and the console shell prompt changes to metasploit. 
+Objective : is to make a PostgreSQL DB on which metasploit can save the scan results and also save its modules to fetch from, increasing speed.
+Inside Metasploit : 
+`msf > msfdb init` 
+Output : 
+`[*] exec: msfdb init`
+`[i] Database already started`
+`[+] Creating database user 'msf'`
+`[+] Creating databases 'msf'`
+`[+] Creating databases 'msf_test'`
+`[+] Creating configuration file '/usr/share/metasploit-framework/config/database.yml'`
+`[+] Creating initial database schema`
+
+Now we log in to Postgres as root. Use the switch user 'su' command on the msfconsole.
+`msf > su postgres` 
+Console now changes to :
+`postgres@paradoxical:/home/paradoxical $ >` 
+
+Now here, we run a createuser command with the username 'msf_user' and the '-P' flag to setup a password :
+`postgres@paradoxical:... $ > createuser msf_user -pP 
+(Console prompt will appear for password. 12345678 for this example)
+
+Now after all this, Make the actual DB and grant this user the permission for the same.
+`postgres@paradoxical:... $ > createdb --owner=msf_user MyCustomDB`
+Then just type `exit` and you'll fallback to the  msfconsole prompt. 
+
+Now just connect the Metasploit instance to this DB.
+`msf > db_connect msf_user:12345678@127.0.0.1/MyCustomDB` 
+Output : `[*] Connected to Postgres data service: 127.0.0.1/MyCustomDB`
+[Why localhost? Because we made this DB locally. The IP would change if it was a DB deployed somewhere else remotely. ]
+
+Then check status by
+`msf > db_status` -- and it should show :
+`[*] Connected to MyCustomDB. Connection type: postgresql. Connection name: local_db_service.`
+If it's not connected, the output will be `[*] postgresql selected, no connection` instead.
+
+#### **19) BECOMING SECURE & ANONYMOUS**
