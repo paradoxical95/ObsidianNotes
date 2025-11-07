@@ -816,3 +816,77 @@ Confirms the status. Now if reachable, go ahead and attack.
 
 #### **21) UNDERSTANDING KERNEL MODULES**
 Both native and loadable kernel modules.
+Kernel is the core. Literally the layer b/w hardware and the OS. Restricted for good reasons.
+With great power comes great responsibility. Kernel basically manages all of the hardware connections to the OS - be it memory, CPU, even the UI on screen.
+Access to the kernel can fundamentally change how the OS will function -- can also brick it. 
+Example : MITM type attacks. 
+
+**What is a Kernel Module**
+Modules can be added, for example, each device (video cards, BT, USB, filesystem, extensions) will require it's own module/driver integrated properly in the Kernel modules to function properly. 
+This traditionally required full process of rebuild + compile + reboot, but now we have LKM i.e Loadable kernel modules. By necessity, they have access to the lowest levels of kernels -- making them vulnerable. If a threat-actor can get the system/admin to load a new module to the kernel (which has an embedded rootkit), then it's game over.
+
+**Checking the Kernel Version**
+2 ways. 
+`$ > uname -a`
+OR
+Checking the file /proc/version
+`$ > cat /proc/version`
+Both give a similar output :
+`Linux paradoxical 6.16.8+kali-amd64 #1 SMP PREEMPT_DYNAMIC Kali 6.16.8-1kali1 (2025-09-24) x86_64 GNU/Linux`
+And
+`Linux version 6.16.8+kali-amd64 (devel@kali.org) (x86_64-linux-gnu-gcc-14 (Debian 14.3.0-8) 14.3.0, GNU ld (GNU Binutils for Debian) 2.45) #1 SMP PREEMPT_DYNAMIC Kali 6.16.8-1kali1 (2025-09-24)`
+
+**Kernel Tuning with *sysctl***
+You can do temp changes with `sysctl`
+To make them permanent, alter the file at `/etc/sysctl.conf`
+Again, very dangerous. File contents : 
+`........`
+`debug.kprobes-optimization = 1`
+`dev.hpet.max-user-freq = 64`
+`dev.i915.oa_max_sample_rate = 100000`
+`dev.i915.perf_stream_paranoid = 1`
+`dev.mac_hid.mouse_button2_keycode = 97`
+`................`
+`dev.tty.legacy_tiocsti = 0`
+`dev.xe.observation_paranoid = 1`
+`fs.aio-max-nr = 65536`
+`................ `
+
+Let's say, to do MITM, we need an attack surface which will be hijacking the ipv4 packets. Now the traffic passes through the hacker's system -- so they can view & alter the comms now. Try :
+`$ > sysctl -a | less | grep ipv4` 
+Try to look for **"net.ipv4.ip_forward = 0"**
+Switch this 0 to 1. Temporarily by `$ > sysctl -w net.ipv4.ip_forward=1`
+For a more permanent solution, edit the `/etc/sysctl.conf` file.
+NOTE : In my case, the file was at `/etc/ufw/sysctl.conf` as I have UFW installed.
+Observe ->
+`#Uncomment this to allow this host to route packets between interface`
+`#net/ipv4/ip_forward=1`
+So just uncomment it.
+
+For hardening, you can disable ICMP echo requests by adding the line
+`net.ipv4.icmp_echo_ignore_all=1` -- to make it more difficult (not impossible) for hackers to find your system.
+
+**Managing Kernel Modules**
+Old way is the `modinfo/insmod/lsmod/rmmod` commands. Newer way is `modprobe`
+`$ > lsmod`  -- will list all kernel modules + info on them.
+To insert and remove, you use the remaining commands. 
+`$ > modinfo _ModuleName_` will reveal significant info the module passed with it (will also list dependencies). 
+**Using newer 'modprobe'**
+Here, -a flag to add and -r flag to remove. 
+`$ > sudo modprobe -a _ModuleName_` & `$ > sudo modprobe -r _ModuleName_`
+Why use this? modprobe auto handles dependencies, options, installation and removal procedures + takes them into account before making any changes. Hence, safer. 
+
+You can ofc install any such custom LKM (embedded with rootkit) and use `dmesg` command along with grep to filter and see its existence.
+`$ > dmesg | grep video` -- assuming you installed a custom video driver
+
+#### **22) AUTOMATING TASK w/ JOB SCHEDULING**
+'cron' strikes back. Helpful for all sorts of scheduled tasks/jobs. 
+`'crond'` and `'crontab'` are the most useful tools here. The daemon and the table are all you need. Edit the file located at `/etc/crontab`.
+This file has 5 + 2 fields. 
+Minute (M : 0-59), Hour (H : 0-23), Day of Month (DOM : 1-31), Month (MON : 1-12), Day of the Week (DOW : 0-7 -- Sunday is both 0 and 7) along with the user running it (USER) and what needs to be executed (COMMAND).
+Example - a task meant for 2:30 AM, Monday to Friday, every month by user root. 
+M   H   DOM   MON   DOW    USER    COMMAND
+30  2      *             *         1-5        root       /root/myscript
+
+#### **23) PYTHON SCRIPTING**
+File - "Ch17_Python.py"
