@@ -879,14 +879,49 @@ Why use this? modprobe auto handles dependencies, options, installation and remo
 You can ofc install any such custom LKM (embedded with rootkit) and use `dmesg` command along with grep to filter and see its existence.
 `$ > dmesg | grep video` -- assuming you installed a custom video driver
 
+==ALSO NOTE : `sysctl` used here is a tool used to configure kernel parameters in Linux, while `systemctl` is a command used to manage `systemd` services and the system state (Example - systemctl manages hybrid-sleep). They serve different purposes and are not interchangeable.==
+
 #### **22) AUTOMATING TASK w/ JOB SCHEDULING**
 'cron' strikes back. Helpful for all sorts of scheduled tasks/jobs. 
-`'crond'` and `'crontab'` are the most useful tools here. The daemon and the table are all you need. Edit the file located at `/etc/crontab`.
+`'crond'` and `'crontab'` are the most useful tools here. The daemon and the table are all you need.
+You can directly edit the **crontab** using `nano` or `mousepad` at `/etc/crontab`. Opening it will reveal the standard 4 processes with their default schedule --usr/sbin/anacron etc.
 This file has 5 + 2 fields. 
-Minute (M : 0-59), Hour (H : 0-23), Day of Month (DOM : 1-31), Month (MON : 1-12), Day of the Week (DOW : 0-7 -- Sunday is both 0 and 7) along with the user running it (USER) and what needs to be executed (COMMAND).
+**Minute (M : 0-59), Hour (H : 0-23), Day of Month (DOM : 1-31), Month (MON : 1-12 or jan,feb,mar), Day of the Week (DOW : 0-7 or sun,mon,tue -- Sunday is both 0 and 7) along with the user running it (USER) and what needs to be executed (COMMAND).**
+
 Example - a task meant for 2:30 AM, Monday to Friday, every month by user root. 
-M   H   DOM   MON   DOW    USER    COMMAND
-30  2      *             *         1-5        root       /root/myscript
+`M   H   DOM   MON   DOW    USER    COMMAND`
+`30  2   *     *    1-5     root    /root/myscript`
+(Eg: To run the script TUE and THU, just write 2,4 under DOW)
+
+**Scheduling tasks**
+Always append your tasks at the end.
+Let's say you have a script named `systembackup.sh`, located in `/bin`, that you want to run every Sunday at 2 AM, as the 'backup' user. Now the crontab entry would be :
+`00   2   *   *   0   backup   /bin/systembackup.sh`
+OR, if you wanted this backup to happen every 15th and 30th of a month irrespective of the day of the week :
+`00   2   15,30   *   *   backup   /bin/systembackup.sh`
+OR make it run Mon-Fri, every week of the month every month at 23:00
+`00  23   *   *   *   backup   /bin/systembackup.sh`
+OR you wanted to run your own MySQLScanner only on weekends, at 3 AM that too June through August i.e summers. 
+`00   3   *   jun-aug  6,7   paradoxical  /usr/share/MySQLScanner.sh`
+
+**Shortcuts**
+crontab has a few -> @yearly, @annually, @monthly, @weekly, @daily, @midnight, @noon, @reboot. For example, running a scanner every night at midnight :
+`@midnight   user  /bin/some_scanner.sh`
+
+**Using RC Scripts to run jobs at startup**
+rc - run command. 
+==NOTE - Kali has deprecated the `/etc/init.d/rc` along with the package `rcconf`.  However, `update-rc.d` can still be found in 2 formats - `/usr/sbin/debian-update-rc.d` and  `/usr/sbin/update-rc.d`. The debian version is bigger, the normal one is shorter and contains whitelisted & blacklisted init scripts, which you'd want to use.== 
+
+rc scripts use **Linux Runlevels** to decide their behavior -> **0** means **Halt** the system; **1** is for **single-user/minimal mode**; **2-5** is **multiuser** modes & **6** means **reboot** the system.
+
+Services for rc.d can still be added via the update-rc.d command. Make sure they're running. Format : `update-rc.d _name-of-the-script_  remove|defaults|disable|enable`
+Example : running the PostgreSQL service for our DB we made for metasploit, we can do 
+`$ > ps aux | grep postgresql` followed by `$ > update-rc.d postgresql  defaults`
+Now just restart your machine for this to take effect, and notice that postgresql now runs on startup. 
 
 #### **23) PYTHON SCRIPTING**
-File - "Ch17_Python.py"
+Code file - "Ch17_Python.py"
+*For more & better references on making actual tools, the book "Black Hat Python" will do a better job. This chapter is mostly about basics and simple tools. It will cover adding modules, pip, basics - variables, functions, comments, List, importing module libraries, OOP concepts, Dictionaries, Loops, If-Else, Building a TCP client, a TCP listener & a FTP cracker.*
+
+**Adding Modules**
+pip comes pre-installed in Kali, and so does Python3.
