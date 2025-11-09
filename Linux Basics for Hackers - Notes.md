@@ -920,8 +920,11 @@ Example : running the PostgreSQL service for our DB we made for metasploit, we c
 Now just restart your machine for this to take effect, and notice that postgresql now runs on startup. 
 
 #### **23) PYTHON SCRIPTING**
-Code file - "Ch17_Python.py"
+Code files - "Ch17_Python.py" & tcp_listener.py and ftp_cracker.py
 *For more & better references on making actual tools, the book "Black Hat Python" will do a better job. This chapter is mostly about basics and simple tools. It will cover adding modules, pip, basics - variables, functions, comments, List, importing module libraries, OOP concepts, Dictionaries, Loops, If-Else, Building a TCP client, a TCP listener & a FTP cracker.*
 
 **Adding Modules**
 pip comes pre-installed in Kali, and so does Python3.
+
+As expected, the author decides not to use an IDE and instead writes 
+"`#! /usr/bin/python3`" at the top of every script via Leafpad, and then runs `$ > chmod 755 file.py` to execute as a bash script via `./file.py`.
