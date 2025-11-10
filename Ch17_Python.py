@@ -12,3 +12,4 @@ s.close
 # running this by entering the other machine's IP will fetch a result like
 # "SSH-2.0-OPENSSH_7.3p1 Debian-1"
 # This is what shodan.io does in essence.
+
