@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Linux Basics for Hackers - Notes.md",
+                "file": "Hacking For Dummies - Notes.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Linux Basics for Hackers - Notes"
+              "title": "Hacking For Dummies - Notes"
             }
           }
         ]
@@ -172,12 +172,12 @@
   },
   "active": "2382c5d8fda08ff8",
   "lastOpenFiles": [
+    "Linux Basics for Hackers - Notes.md",
+    "Hacking For Dummies - Notes.md",
     "ftp_cracker.py",
     "tcp_listener (copy 1).py",
     "tcp_listener.py",
     "Ch17_Python (copy 1).py",
-    "Untitled.md",
-    "Linux Basics for Hackers - Notes.md",
     "Ch17_Python.py",
     "Untitled.base",
     "Untitled 1.base",
