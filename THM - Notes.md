@@ -53,5 +53,8 @@ In such cases, we can RDP to this IT member who can run a powershell script to r
 By default, all machines that join a domain (except for the DCs) will be put in the container called "Computers". The entries might have their own naming convention like 'LPT-SOPHIE' or 'PC-MARK'.
 
 ***Group Policies***
-The main idea of organizing users and computers into separate OUs is to have customized Group Policies for each of them. Situated inside the "Group Policy Management" tool, we have the GPO or Group Policy Objects -- they simply are the collection of settings that can be applied to OUs. 
-(Policies are created under the GPO section but linked in the general section)
+The main idea of organizing users and computers into separate OUs is to have customized Group Policies for each of them. Situated inside the "Group Policy Management" tool, we have the GPO or Group Policy Objects -- they simply are the collection of settings that can be applied to OUs. They can be used to apply settings/rules to computers.
+(Policies are created under the GPO section but linked in the general section). Examples like Default Domain Policy or RDP Policy, etc.
+GPOs are distributed to the network via a network share called `SYSVOL`, which is stored in the DC. All users in a domain should typically have access to this share over the network to sync their GPOs periodically. The SYSVOL share points by default to the `C:\Windows\SYSVOL\sysvol\` directory on each of the DCs in our network.
+
+***Authentication Methods***
