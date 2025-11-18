@@ -17,7 +17,7 @@ There's also `resmon.exe` - Resource Manager which taskmgr but on steroids.
 CMD Commands : `hostname`, `whomai`, `ipconfig`, `/?` (used as 'man' command in linux, although some commands would want `'help'` instead), `cls`, `netstat`, `net` (manage n/w resources) [net is used for user-management as well]
 VSS or Volume Shadow Copy Service handles the restore point and all.
 
-##### **Active Directory** Basics
+##### **Active Directory Basics** 
 **Windows Domain** is a group of users & computers under the administration of some business. The centralised repo of all those machines is called **Active Directory** & the server that runs this AD is called **Domain Controller** (DC).
 This way, you can centralise ID mgmt and have a unified method of managing security policies.
 Examples - the university/school network that gave you one user ID/pw and you can login on any machine and still have your stuff synced + restrictions (like control panel) still in place.
@@ -64,10 +64,40 @@ On Windows domains, credentials are stored with the DC -- as these are now Domai
 Standard behavior is to assign tickets at log in -- tickets act as a proof of prev auth. 
 Basically it involves the username + timestamp in the requst, encrypted with a key. The Key Distribution Center (KDC) will send back to the usrer, a TGT - ticket granting ticket - and a session key. Then the client, while connecting to a service, asks for a TGS - ticket granting service, which are service specific - which is done when the user sends their username+timestamp encrypted using the Session key + send the TGT and SPN (service principal name). In return, the KDC sends us a TGS along with a service session key in the response. Now the user re-encrypts the TGS with service-owner hash and finally connects to the service
 
-**NetNTLM** - legacy, mainly for compatibility. Client sends an auth req -> server generates a random number & sends it as a challenge to the client -> Client then combines NTLM password hash with the challenge to generate a resp to the challenge & sends it back to the server for verification. The server forwards the challenge & the response to the DC for verification. The DC uses the challenge to recalculate the response and compares it to the original response sent by the client. If they both match, client is auth-cated & server forwards the auth result to the client.\
+**NetNTLM** - legacy, mainly for compatibility. Client sends an auth req -> server generates a random number & sends it as a challenge to the client -> Client then combines NTLM password hash with the challenge to generate a resp to the challenge & sends it back to the server for verification. The server forwards the challenge & the response to the DC for verification. The DC uses the challenge to recalculate the response and compares it to the original response sent by the client. If they both match, client is auth-cated & server forwards the auth result to the client.
 
 ***Trees, Forests & Trusts***
 **Tree** can be formed with a sub-domain like AD network. Example : `thm.local` is our main AD network, and `uk.thm.local` and `eu.thm.local` will be the sub-domains. 
 **Forest** is when 2 or more trees are union-ized as one big network. So all trees will be filled with their respective sub-domains in it.
 For this, a new security group is introduced - **Enterprise Admins**.
 **Trust Relationships** are required when different trees need to access files stored on each other. Example : UK THM needs to access something in MHT Asia or EU. So we need a one-way trust relationship. Trust is one direction, access is the other. Two way is also possible. Does not mean everyone is now family, you still need per-user auth. 
+
+##### **Bash Basics** 
+(Most is covered elsewhere)
+In bash, you can debug by writing `set +` and `set -` inside your code making a block, then on the terminal run `$ > bash +x ./script.sh`. This will show a '+' for the lines that worked perfectly and '-' for the ones that failed.
+`$1`, `$2` etc are all parameters that can be sent when calling the script. Inside the script they can be used like normal variables. Input is still handled by `read`. However, `$0` is used to fetch the script name itself i.e 0 parameter.
+`$#` is used to get the number of args supplied while calling the script.
+**_Arrays_**
+`transport=('car' 'train' 'bike' 'bus')`
+To use : `echo "${transport[@]}"`  -- @ is for all elements, can be replaced by numeric digits.
+To unset/delete an element -- `use unset transport[1]`. 
+To set any element to something else, the same syntax follows -- `transport[1]='truck'`
+**_Conditionals_**
+`if [condition compare condition]`
+`then`
+  `body_of_if`
+`else`
+  `body_of_else`
+`fi`
+Conditionals like `-eq , -ne , -gt , -lt , -ge`
+Example code :
+`#! /bin/bash`
+`filename=$1`
+`if [ -f  "$filename" ] && [ -w  "$filename" ]`
+`then`
+  `echo "hello" > "$filename"`
+`else`
+  `touch "$filename"`
+  `echo "hello" > "$filename"`
+`fi`
+//Here, `-f` checks if the file exists & `-w` checks if its writable. `-r` for readable and `-d` to see if it's a directory. 
