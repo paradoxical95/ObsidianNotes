@@ -72,7 +72,7 @@ Basically it involves the username + timestamp in the requst, encrypted with a k
 For this, a new security group is introduced - **Enterprise Admins**.
 **Trust Relationships** are required when different trees need to access files stored on each other. Example : UK THM needs to access something in MHT Asia or EU. So we need a one-way trust relationship. Trust is one direction, access is the other. Two way is also possible. Does not mean everyone is now family, you still need per-user auth. 
 
-##### **Bash Basics** 
+##### **Bash Basics**
 (Most is covered elsewhere)
 In bash, you can debug by writing `set +` and `set -` inside your code making a block, then on the terminal run `$ > bash +x ./script.sh`. This will show a '+' for the lines that worked perfectly and '-' for the ones that failed.
 `$1`, `$2` etc are all parameters that can be sent when calling the script. Inside the script they can be used like normal variables. Input is still handled by `read`. However, `$0` is used to fetch the script name itself i.e 0 parameter.
@@ -101,3 +101,19 @@ Example code :
   `echo "hello" > "$filename"`
 `fi`
 //Here, `-f` checks if the file exists & `-w` checks if its writable. `-r` for readable and `-d` to see if it's a directory. 
+
+(Part of Network Fundamentals Module)
+##### **LAN Basics**
+*Subnetting* :
+We know, IP Addrs are split into 4 octets, ranging from 0-255. Subnet is just a sub-category, also ranging from 0-255, 4 bytes(32 bits). Subnets use IP Addr in 3 different ways -> ID the network addr, ID the host addr & ID the default gateway.
+Examples ->
+N/W Addr - Identifies the actual start of the N/W and its existence. Device with 192.168.1.100 will be on the N/w identified by 192.168.1.0
+Host Addr - Used to identify a device on the subnet. A device will have the N/W Addr of 192.168.1.1
+Default Gateway - A special addr assigned to a device on the N/W that is capable of sending info to another network. Any data that needs to go to a device that isn't on the same network (168.1.0) will be sent to this device. These devices can use any host addr but usually use either the first or the last addr in the network (.1 or .254)
+
+ARP is the link b/w the MAC Addr & IP Addr of any device on the network. ARP Req (packet) is sent -- a message is broadcasted on the N/w asking the MAC of the IP in question. Only the valid party is allowed to respond via the ARP Reply (packet).
+
+DHCP is responsible for assigning the IP Addresses. When not manually assigned, a new device sends out a `DHCP Discover` req to get any DHCP servers on the N/w. DHCP Server then replies back with an IP Addr via the `DHCP Offer` reply. Then device gets it, sends back a confirmation via `DHCP Request` to the server. Lastly, the DHCP server sends the reply acknowledging via `DHCP ACK`. Device only sends 2 messages - Discover & Request. Server has the other 2, OFFER & ACK.
+
+##### **OSI Model**
+7 Layers. 
