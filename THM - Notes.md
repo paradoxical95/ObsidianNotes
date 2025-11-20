@@ -116,4 +116,29 @@ ARP is the link b/w the MAC Addr & IP Addr of any device on the network. ARP Req
 DHCP is responsible for assigning the IP Addresses. When not manually assigned, a new device sends out a `DHCP Discover` req to get any DHCP servers on the N/w. DHCP Server then replies back with an IP Addr via the `DHCP Offer` reply. Then device gets it, sends back a confirmation via `DHCP Request` to the server. Lastly, the DHCP server sends the reply acknowledging via `DHCP ACK`. Device only sends 2 messages - Discover & Request. Server has the other 2, OFFER & ACK.
 
 ##### **OSI Model**
-7 Layers. 
+Open Systems Interconnection. 
+7 Layers. From 7 to 1 -> **Application, Presentation, Session, Transport, Network, Data Link & Physical**. In OSI, devices can have different functions & designs on a network while communicating with other devices. This model provides a framework dictating how all networked devices will send, receive & interpret data. Encapsulation - pieces of info get added to data. 
+Observing all layers ->
+1. Physical : Ethernet cables for example. 
+2. Data Link : focuses on physical addressing of the transmission. It receives a packet from the network layer (including the IP) and adds the MAC addr of the receiving endpoint. NIC handles this MAC thing. Remember, MAC cannot be changed but can be spoofed. This layer presents the data in a suitable format for transmission.
+3. Network : Routing & re-assembly of data. Optimal path via OSPF (Optimal shortest path first) & RIP (routing info protocol) -- shortest (least devices to hop), reliable (minimal packet loss) & faster physical connection (fibre vs copper). Everything is dealt via IP Addrs & devices here (router etc) are called Layer-3 devices.
+4. Transport : Actual transmission. Methods - always 2 there are - TCP & UDP. 
+	A. TCP -> Reserves  a constant connection b/w the 2 devices for the amount of time it takes for data to be sent & received + incorporates error checking (helps session layer). It guarantees the accuracy of data but requires a reliable connection b/w the 2 devices (a small chunk missing can render the entire chunk useless). It can handle device-sync to prevent flooding, but any slow connection will bottleneck the other device as the connection will be reserved on the receiving end. Slower than UDP bcz devices work a lot harder here. USE CASES : file sharing, browsing, email. 
+	B. UDP -> Not as advanced as TCP. It doesn't care if the data is received. Leaves the Application Layer (user end) to decide if there's any control over how quickly the packets are sent. It is flexible to SDEs. Does not reserve a continuous connection on a device as TCP. Unstable connection here results in a terrible experience for the user. USE CASES : ARP, DHCP, small pieces of data being sent, large video streaming.
+5. Session : When data is formatted/translated from Layer-6, Layer-5 i.e Session layer will begin to create & maintain the connection to the computer for which the data is destined. Connection established -> session created. This layer is also responsible for closing the connection on a timeout or error. Can also create checkpoints -- saves bandwidth. Unique in nature -- data cannot travel over different sessions.
+6. Presentation : The translator. Here, standardization takes place. Back-and-forth with Layer-7. Example - email client varies but we still get the same thing, thanks to Presentation layer. HTTPS occurs at this layer. 
+7. Application : User-facing. Here, protocols & rules are in place to determine how the user should interact with data sent/received. USE CASES : Everything like email clients, browsers, file browing (FileZilla), DNS, etc.
+Order -> Phy-DL-NW-TR-SS-PRS-APP (PD-NTS-PA)
+
+##### **Packets & Frames**
+*What are they?*
+Both are small pieces of data. ==Packet== is under layer-3 i.e Network -- containing IP header & payload. ==Frame== is under layer-2 i.e Data Link -- encapsulates the packet & adds additional info such as the MAC Addr.
+Analogy - Mailing a letter through post. Envelope is the frame, here used to move the letter i.e packet. Once the recipient opens the envelope, the can see the letter itself. This process is called 'encapsulation'.
+Packets are efficient at communication across networked devices. Small pieces hence less chance of bottle-necking. Eg : Loading an image, instead of the whole image, small pieces are sent and then reconstructed on your local machine. The structure of a packet may vary depending upon the type.
+Some notable headers ->
+`Time to live` : lifespan/expiry timer of the packet
+`Checksum` : integrity checking for TCP/IP. Notifies of tampering.
+`Source Addr` : IP of where it was sent from, so that data knows where to return to.
+`Dest Addr` : IP of where it's being sent to, so that data knows where to travel next.
+
+*TCP/IP (3-way handshake)*
