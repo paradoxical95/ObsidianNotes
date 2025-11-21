@@ -131,7 +131,7 @@ Observing all layers ->
 Order -> Phy-DL-NW-TR-SS-PRS-APP (PD-NTS-PA)
 
 ##### **Packets & Frames**
-*What are they?*
+###### *What are they?*
 Both are small pieces of data. ==Packet== is under layer-3 i.e Network -- containing IP header & payload. ==Frame== is under layer-2 i.e Data Link -- encapsulates the packet & adds additional info such as the MAC Addr.
 Analogy - Mailing a letter through post. Envelope is the frame, here used to move the letter i.e packet. Once the recipient opens the envelope, the can see the letter itself. This process is called 'encapsulation'.
 Packets are efficient at communication across networked devices. Small pieces hence less chance of bottle-necking. Eg : Loading an image, instead of the whole image, small pieces are sent and then reconstructed on your local machine. The structure of a packet may vary depending upon the type.
@@ -141,4 +141,27 @@ Some notable headers ->
 `Source Addr` : IP of where it was sent from, so that data knows where to return to.
 `Dest Addr` : IP of where it's being sent to, so that data knows where to travel next.
 
-*TCP/IP (3-way handshake)*
+###### *TCP/IP (3-way handshake)*
+TCP/IP consists of 4 layers of its own-> Application, Transport, Internet & Network Interface.
+(A.T.I.Ni). TCP uses these 4 layers to ensure that data is received at destination. TCP is connection-based -- i.e a connection needs to be established first. Each layer embeds some info in the packet.
+A TCP packet has various sections called headers :
+`Source Port (0-65535)` , `Destination Port`, `Source IP`, `Destination IP`, `Sequence Number` (every piece is given a random number), `Ack Number` (Seq No. + 1), `Checksum` (integrity hash), `Data` (where are the bytes stored), `Flag` (behavior - how it should be handled).
+TCP has this special 3-way handshake. In total we have 6 messages ->
+`SYN` - initial packet sent by the client. Used to initiate the connection + sync the devices.
+`SYN/ACK` - receiving device sends it to acknowledge sync attempt.
+`ACK` - can be used by either party to ack that a series of messages/packets have been rec'd.
+`DATA` - actual bytes of data sent via this message
+`FIN` - cleanly close the connection after completion
+`RST` - abruptly ends all communications -- last resort & indicates a problem.
+
+Process : 2 Devices A & B -> A sends `SYN` to B, B sends `SYN/ACK` back to A and then A sends `ACK` to B. Any sent data is given a Random Number seq & is reconstructed using this number sequence. Both devices must agree with the same number sequence for the data to be sent in the correct order. The order is agreed upon in the above 3 steps of the handshake. Basically,
+`SYN` - Client : Here is my initial seq number (INS) to SYNchronise with (0)
+`SYN/ACK` - Server : here's my INS to SNYchronise with (5000) & I ACKnowledge your INS (0)
+`ACK` - Client : I ACKnowledge your INS (5000), here is some data which is INS+1 (0+1)
+//This way, Client INS is going 0,1,2,3... and FNS will be 1,2,3...
+
+Closing a connection ->
+TCP closes the connection when the rec'r says it has rec'd all the data. TCP inherently reserves system resources, so closing it ASAP is best. To initiate the closure, device will send a "FIN" packet. Here, 
+A sends a `FIN` packet to B, then B sends `FIN` & `ACK` packets, then A replies with `ACK` and then the connection is closed.
+###### *UDP/IP*
+UDP is state-less protocol.
