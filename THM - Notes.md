@@ -209,4 +209,71 @@ Sample Simulation :
 Sending a packet from PC1 to PC3. First a handshake packet is sent, followed by a SYN packet from PC1 to PC3. PC1 tells ROUTING (Switch1) that PC3 is not on his network, so ROUTING sends an ARP REQ to the router to first identify itself as the Router and then tell where PC3 is. Router tells him that and PC3 receives the SYN packet from PC1, sends back a SYN/ACK packet to PC1. PC1 recevies it and sendds back an ACK packet to PC3. PC3 recevies it from PC1 & handshake is complete. Post which, the TCP packet safely & directly travels from PC1 to PC3. After receiving the packet, PC3 sends an ACK to PC1. For that, another handshake is started b/w PC1 & PC3 -- SYN sent from PC1 to PC3. PC3 receives it and sends SYN/ACK to PC1, who then receives/acknowledges it and sends ACK to PC3. PC3 receives it.
 
 ##### **DNS in Detail**
-Domain Name System.
+Domain Name System. Converting IP Addr numbers into read-able websites.
+
+*Domain Heirarchy*
+Root Domain > Top Level Domain > Second-Level Domain -- Subdomains
+TLD : Also 2 sub-types. gTLD (generic = .com, .org, .edu, .online, .club, .biz) & ccTLD (Country code = .ca, .co.uk, .in, .us).
+SLD : The domain preceding the TLD is called SLD. Eg : tryhackme.com has TLD as .com and SLD as tryhackme. SLD is limited to 63 chars + TLD can only use a-z 0-9 and hyphens. 
+// Sub-domains have the same character limit, but no limit on the number of sub-domains that can be made.
+
+*Record Types*
+Many types of DNS records exist. 
+`A Record` : For IPv4 : 104.26.10.229
+`AAAA Record` : For IPv6
+`CNAME Record` : These resolve to another domain name. Example - 'store.tryhackme.com' returns a CNAME record 'shops.shopify.com' which further requires another DNS req for the IP Addr.
+`MX Record` : Resolve to addr of the servers that handle the email for the domain you're querying. These records come with a priority flag -- telling the client in which order to try the servers (perfect for switching to backups)
+`TXT Record` : Free text fields where any text-based data can be stored. Can have multiple uses but most common is to list servers that have the auth-y to send an email on behalf of the domain, or even verify the ownership of the domain.
+
+*Making a DNS Request*
+5 Steps :
+1) When you req a domain name, your PC first checks its local cache to see if you've previously looked up the addr recently. False ? A req to your recursive DNS server will be made.
+2) A Recursive DNS server is usually provided by your ISP. This also has a local cache of recently looked up domains. If a result is found locally, then sent it back to your PC & your request ends. Else, move on to the Root DNS Server for an answer.
+3) The Root servers act as the DNS backbone of the internet -- their job is to redirect you to the correct TLD server (by identifying the parts correctly).
+4) TLD Server holds records for where to find the authoritative server (aka NameServer) to answer the DNS req. Eg: NS for tryhackme.com is kip.ns.cloudflare.com. Many NS exists as backups too.
+5) Autho-DNS is responsible for storing all DNS records for a particular domain name & is also where any updates to your DNS records would be made. Depending upon the record type, the DNS record is then sent back to the Recursive DNS server, where a local copy will be cached for future requests & then relayed back to the original client that made the request. DNS records come with a TTL value (time to live - unit : seconds) representing how long a response be saved locally before having to look it up again -- caching saves time.
+
+##### **HTTP in Detail**
+Set of rules used for communicating with webservers for transmitting webpage data (HTML, images,videos, etc).
+
+*Requests & Responses*
+URL is needed first. Has many parts like scheme (http/s), port, fragment, query string, etc.
+A req is made via "GET" >  `GET / HTTP/1.1` -- Req Method & Protocol version.
+Req has many fields. Firstly the Method (GET), then the 'Host', 'User-Agent', 'Referrer', etc.
+Resp would include Protocol version & the Status Code ('200 OK'), also includes Server, Date, Content-Type, Content-Length and then the information requested, which is usually the body.
+
+*HTTP Methods*
+GET : getting info from the web-server
+POST : submitting data to it -- creating new records
+PUT : submitting data to it -- updating some info
+DELETE : delete any info/records
+
+*HTTP Status Codes*
+(visit https://http.cat for more info)
+Range -
+100-199 : Info -> not common anymore
+200-299 - Success
+300-399 - Redirection
+400-499 - Client Errors
+500-599 - Server side errors
+Common Codes -
+200 - OK
+201 - Created
+301 - Permanently moved
+302 - Found
+400 - Bad Req
+401 - Not Authorised (username pw needed)
+403 - Forbidden (not allowed, no matter logged in or not)
+404 - Not Found
+405 - Method not allowed
+500 - Internal service error
+503 - Service unavailable
+
+*Headers*
+Common Req Headers ->
+Host, User-Agent, Content-Length, Accept-Encoding, Cookie.
+Common Resp Headers ->
+Set-Cookie, Cache-Control, Content-Type, Content-Encoding
+
+*Cookies*
+Saved when you receive a 'Set-cookie' header. HTTP is stateless, cookies can be used to remind the web-server who you are (+/ your settings). Those settings are sent in the Set-Cookie header with proper key-value. Then from now on, all req will be come back with this cookie data. In case of passwords, they are usually a hashed token.
