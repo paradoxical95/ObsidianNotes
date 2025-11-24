@@ -128,7 +128,7 @@ Observing all layers ->
 5. Session : When data is formatted/translated from Layer-6, Layer-5 i.e Session layer will begin to create & maintain the connection to the computer for which the data is destined. Connection established -> session created. This layer is also responsible for closing the connection on a timeout or error. Can also create checkpoints -- saves bandwidth. Unique in nature -- data cannot travel over different sessions.
 6. Presentation : The translator. Here, standardization takes place. Back-and-forth with Layer-7. Example - email client varies but we still get the same thing, thanks to Presentation layer. HTTPS occurs at this layer. 
 7. Application : User-facing. Here, protocols & rules are in place to determine how the user should interact with data sent/received. USE CASES : Everything like email clients, browsers, file browing (FileZilla), DNS, etc.
-Order -> Phy-DL-NW-TR-SS-PRS-APP (PD-NTS-PA)
+Order -> Phy-DL-NW-TR-SS-PRS-APP (Physical-D-NTS-PA)
 
 ##### **Packets & Frames**
 ###### *What are they?*
@@ -164,4 +164,49 @@ Closing a connection ->
 TCP closes the connection when the rec'r says it has rec'd all the data. TCP inherently reserves system resources, so closing it ASAP is best. To initiate the closure, device will send a "FIN" packet. Here, 
 A sends a `FIN` packet to B, then B sends `FIN` & `ACK` packets, then A replies with `ACK` and then the connection is closed.
 ###### *UDP/IP*
-UDP is state-less protocol.
+UDP is state-less protocol (no ACK system) + no need for a constant connection. No 3-way handshake. UDP can tolerate data loss + does  not reserve a continuous connection on a device as TCP -- hence no safeguards such as data integrity. 
+*UDP Headers :* `TTL` (time to live), `Source IP`, `Dest IP`, `Source Port`, `Dest Port`, `Data`.
+It feels one sided. Request sent from B to A and then A keeps on sending Response.
+
+**Ports**
+Ports are the point of exchange. Very specific. Like harbour, ships & ports. Ships line up and connect to a port at the harbour. A cruiser liner cannot dock at a port made for  a fishing vessel & vice versa. Compatibility is defined by the ports. It if ain't compatible it can't park here. Ranging from 0 to 65535 but few apps have a fixed port.
+`FTP - 21`, `SSH - 22`, `HTTP - 80`, `HTTPS - 443`, `SMB - 445`, `RDP - 3389`, etc.
+Eg : `$ > nc  8.8.8.8   443`
+
+##### **Extending your Network**
+*Port Forwarding*
+Configured at the router level, it is the most crucial step. Without it, everything is limited to its own network i.e Intranet. Example - a webserver running something on `Port 80` inside a network having `192.168.1.10` will not be public by default. For that it needs an IP ofc but also the services being port forwarded via that IP. So now this server will have a Public IP of `82.62.51.70`.
+
+*Firewall*
+Responsible for what traffic is allowed to enter/exit. Like border security. Can be configured by admin to permit/deny any traffic. It performs packet inspection to ask these questions -> `Coming from where? ; 
+`Going to where? ;
+`For which port? ; 
+& `What protocol is being used by this traffic?.`
+Operates at Layer 3 & 4 i.e Network & Transport layer. 
+2 Types - Hardware (Fortinet) & software (Snort). 
+2 Categories ->
+a) **Stateful** : Uses the *entire info from a connection* rather than inspecting individual packets. This will determine the behavior of a device *based upon the entire connection.* More resource-intensive but has dynamic decision making. 
+Eg : FW could allow the first parts of a TCP handshake that would later fail. If a connection from a host is bad, it will block the entire device.
+b) **Stateless** : Uses *static set of rules to determine whether individual packets are acceptable or not.* Less resource-intensive, but also dumber. Great for tackling huge data like DDOS.
+Eg : Device sending a bad packet will not necessarily mean that the entire device is blocked. These ones are only effective as the rules that are defined withing them. If a rule is not exactly matched, it is effectively useless.
+
+*VPN Basics*
+VPN works on the fundamental principle of making a secured end-to-end comms line via tunneling b/w two devices.
+For instance - 2 offices can connect securely and directly via a VPN. Like individually, you can still be a part of your network but also be a part of that VPN to communicate.
+VPN allows Networks in different geo-locations to be connected (best for multiple office branches) ; It also offers privacy via encryption & Offers anonymity (blocks your ISP from viewing your traffic).
+Tech : 
+PPP - used by PPTP, used for auth + encryption. On it's own cannot leave a network (non-routable)
+PPTP - Point-to-point Tunneling Protocol - allows data from PPP to travel & leave the network. Easy to set-up + supported by most devices BUT is weakly encrypted.
+IPSec - encrypts data using existing IP framework. Difficult to set-up BUT boasts a strong encryption + supported on many devices.
+
+*LAN NW'ing Devices*
+a) Router : Connect networks & pass data between them. Done by 'routing'. Operate on Layer-3 i.e Network layer. When many routers are present, the data takes optimal path automatically albeit governed by existing routing protocols.
+b) Switch : Dedicated device meant for connecting many devices (3 to 63) via ethernet cables. Operate on both Layer-2 & 3 altho exclusive i.e Layer-2 switch won't operate at Layer-3.
+Example -> Layer 2 is very simple. Layer-3 acts as a router as well. How? It segments via VLAN (`VLAN1` via `192.168.1.1` & `VLAN2` via `192.168.2.1`). This still treats them separate and they can still get the actual internet via the router -- altho this N/w segmentation will determine the comms rule for all devices.
+
+Sample Simulation :
+2 Machines. PC1 connected to Switch1 which is connected to Router. PC3 connected to Switch2 also connected to Router. 
+Sending a packet from PC1 to PC3. First a handshake packet is sent, followed by a SYN packet from PC1 to PC3. PC1 tells ROUTING (Switch1) that PC3 is not on his network, so ROUTING sends an ARP REQ to the router to first identify itself as the Router and then tell where PC3 is. Router tells him that and PC3 receives the SYN packet from PC1, sends back a SYN/ACK packet to PC1. PC1 recevies it and sendds back an ACK packet to PC3. PC3 recevies it from PC1 & handshake is complete. Post which, the TCP packet safely & directly travels from PC1 to PC3. After receiving the packet, PC3 sends an ACK to PC1. For that, another handshake is started b/w PC1 & PC3 -- SYN sent from PC1 to PC3. PC3 receives it and sends SYN/ACK to PC1, who then receives/acknowledges it and sends ACK to PC3. PC3 receives it.
+
+##### **DNS in Detail**
+Domain Name System.
