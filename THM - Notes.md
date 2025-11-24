@@ -277,3 +277,10 @@ Set-Cookie, Cache-Control, Content-Type, Content-Encoding
 
 *Cookies*
 Saved when you receive a 'Set-cookie' header. HTTP is stateless, cookies can be used to remind the web-server who you are (+/ your settings). Those settings are sent in the Set-Cookie header with proper key-value. Then from now on, all req will be come back with this cookie data. In case of passwords, they are usually a hashed token.
+
+##### **How Websites Work**
+2 parts -> Front-end (the way our browser renders the site)
+& Back-end (server that processes the req & returns a resp)
+
+*HTML*
+Websites are made using HTML, CSS & JS. 
