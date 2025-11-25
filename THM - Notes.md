@@ -283,4 +283,41 @@ Saved when you receive a 'Set-cookie' header. HTTP is stateless, cookies can be 
 & Back-end (server that processes the req & returns a resp)
 
 *HTML*
-Websites are made using HTML, CSS & JS. 
+Websites are made using HTML, CSS & JS.
+HTML is tags and attribute based.
+*JavaScript*
+Implemented inside the `<script>` tag usually, this is the dynamic code on a webpage. 
+Example : `<script src="/location/of/javascript_file.js"></script>`
+OR
+`<button onclick='document.getElementById("demo").innerHTML = "Button Clicked";'>Click me!</button>`
+//Sensitive Data Exposure happens when a website forgets to remove clear-text sensitive info in the source code -- which is accessible to anyone.
+
+*HTML Injection*
+Happens when websites fail to filter any malicious text that a user might input into a website. This way, the attacker can inject malicious HTML code onto the site -- a client side thing.
+Input Sanitisation is a necessary practice in this case. 
+
+##### **Web-Stuff Put Together**
+The flow : Req website in your browser -> Find web server IP addr with DNS -> Connect to that web-server -> view website.
+*Other Components*
+1) Load Balancers : A traffic handler when the main web-server is over-loaded. It sits in front of all the web-servers. It ensures high traffic websites can handle the load & providing a failover if server becomes unresponsive. It uses algos like round-robin (sent to each in turn) or weighted (find the least busy one). They can also perform health-checks on all servers.
+2) CDNs : Content Delivery Network, useful for cutting down traffic to a busy website. It allows you to host static files from your website (JS, CSS, Img, MP4,..) & host them across many servers all over the world. When a user requests a file, the CDN finds the nearest server & sends the request there instead of anywhere else.
+3) Databases : Webservers can communicate with DB to store & recall data from them. DB can range from simple plain-text files to complex clusters. Eg: MySQL, MSSQL, MongoDB, etc.
+4) WAF : Web-Application Firewall -- sits b/w the web request & the websever. Its primary purpose is to protect the webserver from any hacking/DDoS attempt. It analyses the web-requests for common attack techniques (bot or real user) + checks for excessive requests by using 'rate-limiting' (certain amount of IPs per second). Sus req are dropped.
+*How Web-servers work*
+A web-server listens for incoming connections & then utilises HTTP to deliver web-contents to its clients. Common examples include Apache, Nginx, IIS & NodeJS. A web-server always returns the content placed in its root directory. Nginx/Apache use `/var/www/html` in Linux and IIS uses `C:\inetpub\wwwroot` for Windows.
+
+Virtual Hosts : WS can host multiple websites with difft domain names -- so they use VH for this. VH are just text based config files. Example : one.com being mapped to `/var/www/website_one` & two.com being mapped to `/var/www/website_two`.
+
+Static vs Dynamic Content : Static never changes i.e pictures, javascript, CSS, but can also include HTML that never changes. Files are directly served from WS with no changes made.
+Dynamic is the opposite. Latest entries, updates on a frequency, search query on a blog, etc. Changes done in the Backend but ofc reflected onto the Frontend.
+
+Scripting & Backend Language : PHP, Python, Ruby, NodeJS, Perl, etc. Superb languages. 
+
+*An example of a full rundown of the steps involved :*
+Request website in your browser -> Check local DNS cache for IP Addr -> Check your recursive DNS Server for Addr -> Query root server to find authoritative DNS server -> Authoritative DNS server advises the IP Addr for the website -> Req passes through a WAF -> then req passes through a load balancer -> Connect to the WS on port 80 or 443 -> WS receives a GET req -> Web App talks to the DB -> Finally, your browser renders the HTML into a viewable website.
+
+____________________________________________________________________
+____________________________________________________________________
+### **Cybersecurity 101** Modules
+
+##### **Windows Command Line**
