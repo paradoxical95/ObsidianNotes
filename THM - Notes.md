@@ -321,3 +321,24 @@ ____________________________________________________________________
 ### **Cybersecurity 101** Modules
 
 ##### **Windows Command Line**
+Many commands.
+Remember, most commands will comply with `/?` flag to see their help page.
+- `set` command will show all the Path variables of how Windows will execute commands.
+- `ver` will show the Windows version.
+- `systeminfo` will show the OS details.
+- `help` & `cls` are nothing new.
+- `more` command is applicable here as well.
+- `driverquery` for instance is a big command showing all driver info but you can pipe it with more -> `C:\> driverquery | more`
+- `ipconfig` for basic network queries, and `ipconfig /all` for a detailed view
+- `ping example.com` & `tracert example.com` both are known
+- `nslookup example.com` (you can add the IP after the domain to force the nameserver).
+- `netstat` is responsible for showing current active connections & listening ports. This command has many arg flags like `-a` (all established connections & listening ports), `-b` (programs associated w/ each listening port & estb connection), `-o` (reveals the PID with the connection), `-n` (numerical form to addresses & port numbers). Combine them all at once and it becomes -> `C:\> netstat -abon`.
+- `cd` & `dir` are known. `dir` has `/a` (all-display hidden files as well) & `/s` (displays current dir & all sub-dirs ) flags. 
+- `tree` command also carries over.
+- `mkdir`, `rmdir`, `copy`, `move`, `del` or `erase`, `type` (for file-type). Wildcards will also work here. Eg: `copy *.md  C:\Markdown` will copy all markdown files to that directory.
+- `tasklist` is basically the `ps aux` command from Linux. To see all available filters of this command use `tasklist /?`. One such is `FI` stands for 'filter' followed by any condition if you want. Eg : `C:\> tasklist /FI "imagename eq sshd.exe"`.
+- `taskkill` is used to kill a process using its PID. Same as `kill` in linux. 
+  Eg : `C:\> taskkill /PID target_pid`.
+- `chkdsk` a very important command. So is `sfc /scannow`. Similarly, `shutdown` with `/s` to actually shutdown, `/a` to abort a shutdown, `/t` for a timer, `/fw` for entering firmware & `/r` to restart are useful.
+
+##### **Windows Powershell**
