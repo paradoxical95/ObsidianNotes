@@ -409,3 +409,7 @@ OR
 `PS:> Invoke-Command -ComputerName Server01 -Credential Domain01/User01 -ScriptBlock { Get-Culture }`
 OR - Running Get-Service on a PC without uname/pw
 `PS:> Invoke-Command -ComputerName RoyalFortune -ScriptBlock { Get-Service }`
+
+##### **Linux Shells**
+Same old boring stuff.
+pwd, cd, ls, cat, grep, more, less -- all done in Linux Basics for Hackers book.
