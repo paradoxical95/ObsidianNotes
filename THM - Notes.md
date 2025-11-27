@@ -342,3 +342,39 @@ Remember, most commands will comply with `/?` flag to see their help page.
 - `chkdsk` a very important command. So is `sfc /scannow`. Similarly, `shutdown` with `/s` to actually shutdown, `/a` to abort a shutdown, `/t` for a timer, `/fw` for entering firmware & `/r` to restart are useful.
 
 ##### **Windows Powershell**
+Object oriented. Built on the .NET framework. 
+*Basics*
+Powershell uses `cmdlets` called command-lets. Powerful than traditional windows commands. They follow a verb-noun naming convention. Verb is the action, noun is the object. Example : `Get-Content` or `Set-Location`. Writing '`Get-Command`' will list all the use-able commands. You will notice that the output will have 4 object as the columns (CommandType, Name, Version, Source). It is always possible to filter the output of any cmdlet based on the objects displayed by it. Here we can filter for 'functions' by using 
+`PS:> Get-Command -CommandType "Function"`.
+
+Use `Get-Help` followed by the target command to see the man page of the target command.
+Example : `PS:> Get-Help Get-Date`. You can also append `-examples` to get a better explanation using examples.
+Ofc to make life easier, all commands have an alias (shortcut names). You can see all of them using `Get-Alias`. Example : cat -> Get-Content; cd -> Set-Location, pwd -> Get-Location. Many cmdlets have more than 1 aliases. cat, type, gc -- all point to Get-Content.
+
+Powershell can be expanded with more cmdlets that can be downloaded from outside. Format is `Cmdlet -Property "Pattern*"`. Example : `PS:> Find-Module -Name "Powershell*"`. This can be followed up with Install-Module, like `PS:> Install-Module -Name "PowerShellGet"`.
+Using `PS:> Get-Alias -Name "echo"` will only reveal the command that echo is an alias of, which is 'Write-Output'.
+
+*Navigating the File System*
+Just like `dir` we have `ls` and `Get-ChildItem`, to list everything.
+`Set-Location` with the Path flag can be used to 'cd' into the target directory.
+Example : `PS:> Set-Location -Path "./Documents"`
+
+To create an item in PS, we use `New-Item` followed by -Path + path_value + -ItemType + file/directory. Example :
+`PS:> New-Item -Path ".\SomeFolder\OneMoreFolder" -ItemType "Directory"` 
+-- this will create 'OneMoreFolder' inside SomeFolder.
+Now to make a txt file inside we can use :
+`PS:> New-Item -Path ".\SomeFolder\OneMoreFolder\my-file.txt" -ItemType "File"`
+
+Removing is a tad-bit different. CMD will have `del` and `rmdir`, separate for file and folders but here, `Remove-Item` is same for both. These 2 are valid : 
+`PS:> Remove-Item -Path ".\SomeFolder\OneMoreFolder\my-file.txt"`
+`PS:> Remove-Item -Path ".\SomeFolder\OneMoreFolder\"`
+
+Copy & Move is done by `Copy-Item` & `Move-Item`.
+`PS:> Copy-Item -Path .\Closet\Shelf\coat.txt -Destination .\Closet\Shelf\coat2.txt`
+`PS:> Move-Item -Path .\Closet\Shelf\coat2.txt -Destination .\Closet\`
+[Make sure you're not in the Closet or Shelf directory while performing these. If you are then remove the name of the parent directory.]
+
+`cat` is replaced by `Get-Content` here. Altho cat will also work. Example :
+`PS:> Get-Content -Path ".\coat.txt"`
+
+*Piping, Filtering & Sorting Data*
