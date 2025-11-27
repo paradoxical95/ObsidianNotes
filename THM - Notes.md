@@ -378,3 +378,34 @@ Copy & Move is done by `Copy-Item` & `Move-Item`.
 `PS:> Get-Content -Path ".\coat.txt"`
 
 *Piping, Filtering & Sorting Data*
+Piping works in the same manner as in Linux. Output of one command is sent as input for another command. Example : 
+`PS:> Get-ChildItem | Sort-Object Length`
+OR
+`PS:> Get-ChildItem | Where-Object -Property "Extension" -eq ".txt"`
+(-eq, -gt, -ge, -lt, -le, -like)
+`PS:> Get-ChildItem | Where-Object -Property "Name" -like "ship*"`
+Can also select kinda like SQL
+`PS:> Get-ChildItem | Select-Object Name,Length`
+To display the largest file, you can chain the cmdlets
+`PS:> Get-ChildItem | Sort-Object -Descending | Select-Object -First 1`
+Lastly, Select-String can search for pattern within files (same as grep/findstr).
+`PS:> Select-String -Path ".\coat.txt" -Pattern "thrift"`
+
+*System & Network Information*
+`Get-ComputerInfo` (akin to `systeminfo` from CMD).
+`Get-LocalUser` to list all the user accounts on the system.
+`Get-NetIPConfiguration`  & `Get-NetIPAddress` -- are both meant for ipconfig stuff.
+
+*Real-Time System Analysis*
+`Get-Process` is kinda like ps-aux to see all the processes like scvhost, winlogon, etc.
+`Get-Service` to see all the services running -- like Xbox, Wifi, Defender etc.
+`Get-NetTCPConnection` will debug current TCP connections.
+`Get-FileHash` is for getting the hash of a file (usually accompanied with -Path and file's path)
+
+*Scripting*
+An essential command is `Invoke-Command`. Meant for efficient remote management, and when combined with scripting, it can help in automation of tasks across multiple machines. Can also be used to execute payloads or commands. Example -> 
+`PS:> Invoke-Command -FilePath C:\scripts\test.ps1 -ComputerName Server01`
+OR
+`PS:> Invoke-Command -ComputerName Server01 -Credential Domain01/User01 -ScriptBlock { Get-Culture }`
+OR - Running Get-Service on a PC without uname/pw
+`PS:> Invoke-Command -ComputerName RoyalFortune -ScriptBlock { Get-Service }`
