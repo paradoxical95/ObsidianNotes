@@ -412,4 +412,26 @@ OR - Running Get-Service on a PC without uname/pw
 
 ##### **Linux Shells**
 Same old boring stuff.
-pwd, cd, ls, cat, grep, more, less -- all done in Linux Basics for Hackers book.
+pwd, cd, ls, cat, grep, more, less, history -- all done in Linux Basics for Hackers book.
+Talking about shells ->
+Bash (Bourne again shell) : sorta old, wide in scripting, basic customization, less user-friendly, no syntax highlighting. 
+Fish (friendly interactive shell) : Limited scripting, advanced tab completion, good customization, most user friendly, syntax highlighting.
+Zsh (Z shell) : Top level of scripting (bash + extra features), tab completion can be extended via plugins, Advanced customization (can make super user friendly), syntax highlighting (but via plugins).
+Next is scripting, executing the script, for loops, input in scripts, if-else, comments, etc.
+
+##### **Networking Concepts**
+OSI Layers - 1 to 7 - Phy, Data Link, Network, Transport, Session, Presentation & Application.
+Important Protocols in each layer :
+1 Physical - Electrical/Optical/Wireless
+2 Data Link - Ethernet (802.3) & WiFi (802.11)
+3 Network - IP, ICMP, IPSec
+4 Transport - UDP, TCP
+5 Session - NFS, RPC
+6 Presentation - Unicode, MIME, JPEG, PNG, MPEG
+7 Application - HTTP, FTP, DNS, POP3, SMTP, IMAP
+
+Common Questions -> 
+Responsible for E2E comms b/w running apps - Layer 4
+Responsible for routing packets to proper network - Layer 3
+Responsible for encoding application data - Layer 6
+Responsible for Data b/w hosts on the same network - Layer 2
