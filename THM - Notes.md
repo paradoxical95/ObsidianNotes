@@ -420,18 +420,49 @@ Zsh (Z shell) : Top level of scripting (bash + extra features), tab completion c
 Next is scripting, executing the script, for loops, input in scripts, if-else, comments, etc.
 
 ##### **Networking Concepts**
-OSI Layers - 1 to 7 - Phy, Data Link, Network, Transport, Session, Presentation & Application.
+*OSI Model*
+Layers - 1 to 7 - Phy, Data Link, Network, Transport, Session, Presentation & Application.
 Important Protocols in each layer :
-1 Physical - Electrical/Optical/Wireless
-2 Data Link - Ethernet (802.3) & WiFi (802.11)
-3 Network - IP, ICMP, IPSec
-4 Transport - UDP, TCP
-5 Session - NFS, RPC
-6 Presentation - Unicode, MIME, JPEG, PNG, MPEG
-7 Application - HTTP, FTP, DNS, POP3, SMTP, IMAP
-
+1 - Physical - Electrical/Optical/Wireless
+2 - Data Link - Ethernet (802.3) & WiFi (802.11)
+3 - Network - IP, ICMP, IPSec
+4 - Transport - UDP, TCP
+5 - Session - NFS, RPC
+6 - Presentation - Unicode, MIME, JPEG, PNG, MPEG
+7 - Application - HTTP, FTP, DNS, POP3, SMTP, IMAP
 Common Questions -> 
 Responsible for E2E comms b/w running apps - Layer 4
 Responsible for routing packets to proper network - Layer 3
 Responsible for encoding application data - Layer 6
 Responsible for Data b/w hosts on the same network - Layer 2
+
+*TCP/IP Model*
+4 - Application Layer -- stores 3 Layers (5,6,7) of OSI -- HTTP/s, FTP, POP3, SMTP, IMAP, Telnet, SSH.
+3 - Transport Layer -- same (L4) -- TCP/UDP
+2 - Internet Layer -- Network Layer of OSI (L3) -- IP, ICMP, IPSec
+1 - Link Layer -- Data Link Layer (L2) -- 802.11, 802.3
+
+*IP Addresses & Subnets*
+ifconfig, subnets, 4 octets from 0-255, each of 8 bits making 32 bits in total for 1 IP.
+`192.168.1.0` is the network address & `192.168.1.255` is broadcast address.
+Private IPs can only be in range with `10.0.0.0 - 10.255.255.255`, `172.16.0.0 - 172.31.255.255` & `192.168.0.0 - 192.168.255.255`
+i.e `10/8` , `172.16/12`, `192.168/16` [The unit after / determines the leftmost bits that do not change. Total 8 * 4 = 32. /8 meaning only first 8 bits i.e first octect (10.) is constant. 16 means first 2 octects, 12 means first + half of second.]
+
+*UDP & TCP*
+(Same basics) In UDP, port 0 is reserved. Rest is same -- Port 1 to 65535 (2^16 - 1).
+UDP is stateless/careless/rebellious. TCP is not. TCP needs a 3-way handshake.
+Both are Layer 4 protocols.
+
+*Encapsulation*
+Process of every layer adding a header (& at times a trailer) to the received unit of data & sending this 'encapsulated' unit to the layer below.
+Happens in 4 steps ->
+a) Application Data : User input. An email or an Instant message for example.
+b) Transport Protocol segment/datagram : Transport layer (TCP/UDP) adds the proper header info & creates TCP segment (or UDP datagram). This segment is sent to the layer below it, the network layer.
+c) Network Packet : Internet layer, adds an IP Header to the received TCP segment or UDP datagram. Then this IP packet is sent to the layer below it, the DL layer.
+d) Data Link Frame : Ethernet/Wifi receives the packet & adds the proper header & trailer, creating a frame.
+Application Data ->
+		              TCP/UDP Header + Application Data
+			IP Header + TCP/UDP Header + Application Data
+Eth/Wifi Header + IP Header + TCP/UDP Header + Application Data + Eth/Wifi Header
+
+##### **Networking Essentials**
