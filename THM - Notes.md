@@ -466,3 +466,41 @@ Application Data ->
 Eth/Wifi Header + IP Header + TCP/UDP Header + Application Data + Eth/Wifi Header
 
 ##### **Networking Essentials**
+*DHCP*
+Whenever we want to access a network - 3 things are configured : IP Addr + Subnet Mask, Router (gateway) & DNS Server. This happens whenever anyone connects to a new network.
+DHCP is the one automating this process cuz you don't carry your domain controller in your pocket. It also saves us from address conflicts. 
+DHCP relies on the UDP port 67-68. Server listens on 67 and client sends from 68. 
+4 Steps - D O R A
+Discover - Offer - Request - Acknowledge
+Flow : Client broadcasts a DHCP-DISCOVER message, seeking the local DHCP server if one exists. Server responds with a DHCP-OFFER w/ an IP Addr available for client to accept. Client responds with a DHCP-REQUEST message to indicate that it has accepted the offered IP and finally Server responds back with a DHCP-ACK message to confirm that this IP addr is now assigned to the client.
+Example :
+`$:> tshark -r DHCP-G5000.pcap -n`
+Output :
+`1 0.000000 0.0.0.0 → 255.255.255.255 DHCP 342 DHCP Discover - Transaction ID 0xfb92d53f`
+`2 0.013904 192.168.66.1 → 192.168.66.133 DHCP 376 DHCP Offer - Transaction ID 0xfb92d53f` 
+`3 4.115318 0.0.0.0 → 255.255.255.255 DHCP 342 DHCP Request - Transaction ID 0xfb92d53f`
+`4 4.228117 192.168.66.1 → 192.168.66.133 DHCP 376 DHCP ACK - Transaction ID 0xfb92d53f`
+Client starts with a no IP, only MAC. After sending DISCOVER, the DHCP server at `192.168.66.1` replies with an offer. Even till step 3, the client has no IP as it needs to use the IP offered by DHCP. So it sends packets from the IP Addr `0.0.0.0` to the broadcast `255.255.255.255`. In the end, DHCP does provide the IP and client accepts it.
+DHCP uses Client's MAC address to handle all this. So in essence, DHCP has leased the IP Addr to the client to access n/w resources, given the gateway to  route our packets outside the local network & given a DNS server to resolve the domain names.
+
+*ARP*
+Bridging layer 3 addressing to layer 2 addressing.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
