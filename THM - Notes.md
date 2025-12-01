@@ -470,7 +470,7 @@ Eth/Wifi Header + IP Header + TCP/UDP Header + Application Data + Eth/Wifi Heade
 Whenever we want to access a network - 3 things are configured : IP Addr + Subnet Mask, Router (gateway) & DNS Server. This happens whenever anyone connects to a new network.
 DHCP is the one automating this process cuz you don't carry your domain controller in your pocket. It also saves us from address conflicts. 
 DHCP relies on the UDP port 67-68. Server listens on 67 and client sends from 68. 
-4 Steps - D O R A
+4 Steps - D-O-R-A
 Discover - Offer - Request - Acknowledge
 Flow : Client broadcasts a DHCP-DISCOVER message, seeking the local DHCP server if one exists. Server responds with a DHCP-OFFER w/ an IP Addr available for client to accept. Client responds with a DHCP-REQUEST message to indicate that it has accepted the offered IP and finally Server responds back with a DHCP-ACK message to confirm that this IP addr is now assigned to the client.
 Example :
@@ -485,22 +485,54 @@ DHCP uses Client's MAC address to handle all this. So in essence, DHCP has lease
 
 *ARP*
 Bridging layer 3 addressing to layer 2 addressing.
+As 2 hosts communicate over a network, an IP packet is encapsulated within a data link frame as it travels over layer 2. Common DL layers are Eth (802.3) & Wifi (802.11). For the proper DL header, IP is not enough, we also need the Target's MAC. 
+Devices on same eth n/w do not need to know each other's MAC all the time -- only while communicating, without which there's nothing to communicate. Everything otherwise revolves around IP Addrs. 
+Example : You connect to a n/w. If this n/w has a DHCP server, your device will be auto configured to use a specific gateway (router) + a DNS server. Now, your device knows the IP of the DNS server to resolve any domain name + it knows the IP Addr of the router for when it needs to send packets over the internet. In all this scenario, no MAC Addrs are revealed.
+Every IP Packet will have a SRC MAC ADDR, a DST MAC ADDR, and TYPE (IPv4)
+
+ARP makes it possible to find the MAC of another device on the ethernet. 
+What happens is -> A device sends an ARP req with it's IP Addr enclosed, asking for some other device's IP. The ARP req is sent from the sender's MAC to the broadcast addr i.e `ff.ff.ff.ff.ff.ff`.  Then the ARP reply arrives, and the other device replies back with it's MAC saying it is attached to the requested IP. Now, these 2 can exchange DL layer frames. (You can use `tcpdump` or `tshark` to see the flow -- or inspect it in Wireshark.)
+
+*ICMP*
+Internet Control Message Protocol.
+`ping` & `traceroute`/`tracert` are important troubleshooting commands.
+Ping :
+Sends an ICMP ECHO req (type 8). THe receiving end replies with a type 0 ECHO message.
+Altho, a FW might stop ping requests. 
+Traceroute :
+IP has a field called TTL which indicates the max number of routers a packet can travel through before it is dropped. Router decrements the packet's TTL by 1 before it sends it across. When TTL == 0, router drops the packet & sends an ICMP Time Exceeded Msg (Type 11) -- time measured in number of routers, not seconds.
+Hence, traceroute can determine the path a packet took to travel from SRC to DST. You can always look up those addresses (public/private) that might show up in the output.
+
+*Routing*
+Everything hops through multiple routers on the internet to reach their destination. Routers are essential in connecting multiple networks. Routing Protocols & Algos decide the proper flow. Protocols ->
+1) OSPF - Open shortest path first : share info on the n/w topology & calculate the most efficient path for transmission. Here, routers exchange updates about the status of their connected links & n/ws so that each router has a complete map of the n/w & determine best routes.
+2) EIGRP - Enhanced Interior Gateway Protocol : Cisco proprietary routing protocol. Allows routers to share info about the n/ws they can reach + the cost associated with those routes.
+3) BGP - Border Gateway Protocol : Allows difft n/ws (like those of ISPs) to exchange routing info & establish paths for data travel b/w these n/ws + it helps ensure data can be routed efficiently even when traversing multiple n/ws
+4) RIP - Routing info protocol : Often used in small networks. Routers here share info about the n/ws they can reach + number of hops reqd. Result - each router builds a routing table based on this info, choosing the routes with fewest hops.
+
+*NAT*
+Network Address Translation.
+IPv4 can support a max of 4 billion devices. Many private IPs can work under 1 public IP. That's the idea behind NAT. This way you only need to provide Internet access to just 1 publicly exposed IP. (works in 2^ i.e 2 public IPs for 30 private ones = 32).
+Unlike simple routing, routers that support NAT must find a way to track ongoing connections. Also, NAT-supporting routers maintain a table translating n/w addrs b/w internal & external n/ws. (Internal n/w could use a Private IP range and external can do with Public IP).
+In any normal home setup with PCs, Laptops, Cameras, etc; the Router will maintain a table that maps the internal IP & PORT of all these devices w/ it's external IP Addr & Port.
+Example : 3 devices with IP Addr & Port as -> `192.168.0.129:15401` , `x.x.x.137:27912`, `x.x.x.112:38192` -> will all be seen externally with `212.3.4.5` but separate ports `:19273`, `:32759`, `:41251` by the webserver.
+[Theoretically, a router with infinite processing power can handle 65000 simultaneous TCP connections]
 
 
+##### **Networking Core Protocols**
+Understanding WHOIS, DNS, HTTP, FTP, SMTP, POP3 & IMAP.
 
+*DNS*
+Remembering Addresses. We don't have to. Bcz of DNS. As read previously, We have 4 records in DNS : 
+A Record - Address - mapping a hostname to one/more IPv4 Addr. Eg: `something.com` resolves to `172.17.2.172`.
+AAAA Record - Same but for IPv6.
+CNAME - Canonical Name - maps domain to another domain. Eg: `example.com` mapped to `www.example.com` or even `example.org`.
+MX Record - Mail Exchange - specifies the Mail Seever responsible for handling emails for a domain.
+`$ > nslookup` is useful for this. This command will send DNS queries back and forth, including one A and one AAAA record query.
 
+*WHOIS*
+Domain name is resolved to an IP Addr. But for this, someone needs to have the authority to set the A,AAAA & MX Records, among other DNS records for the domain. This power lies with the one who registers the domain. All the info can be had via `whois` because everyone needs to give info while registering and it goes in the public db.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+*HTTP(S)*
+S is for secure. Common methods are `GET`, `POST`, `PUT` & `DELETE`.
+HTTP on Port 80 and HTTPS on Port 443. (8080 is a backup for Port 80).
