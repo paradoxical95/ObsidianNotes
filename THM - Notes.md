@@ -520,7 +520,15 @@ Example : 3 devices with IP Addr & Port as -> `192.168.0.129:15401` , `x.x.x.137
 
 
 ##### **Networking Core Protocols**
-Understanding WHOIS, DNS, HTTP, FTP, SMTP, POP3 & IMAP.
+Ports summary -> 
+TELNET : TCP : 23
+DNS : TCP/UDP : 53
+HTTP : TCP : 80
+HTTPS  : TCP : 443
+FTP  : TCP : 21
+SMTP : TCP : 25
+POP3  : TCP : 110 
+IMAP  : TCP : 143
 
 *DNS*
 Remembering Addresses. We don't have to. Bcz of DNS. As read previously, We have 4 records in DNS : 
@@ -536,3 +544,63 @@ Domain name is resolved to an IP Addr. But for this, someone needs to have the a
 *HTTP(S)*
 S is for secure. Common methods are `GET`, `POST`, `PUT` & `DELETE`.
 HTTP on Port 80 and HTTPS on Port 443. (8080 is a backup for Port 80).
+Wireshark can be used to see the basic structure of the web page. Burp suite and other tools are also handy.
+Telnet was mentioned but it's better to also try other commands like `wget` and `curl`.
+A) `$ > telnet 10.48.146.30` 
+`GET /flag.html HTTP/1.1`
+`Host: anything`
+B) `$ > wget http://10.48.146.30/flag.html`  --> followed by `$ > cat flag.html`
+C) `$ > curl http://10.48.146.30/flag.html -o flag.html` --> followed by `$ > cat flag.html`
+
+*FTP*
+Efficient and quick. Has its own commands like `USER`, `PASS`, `RETR`, `STOR` that run behind the scene, akin to the SYN/ACK stuff of TCP. Observing via Wireshark will reveal the same.
+FTP can handle a few unix commands like `ls`. You can change the file type for text files, lets say for ASCII by using `type ascii`. 
+`get` command can be used to fetch a file. Example : `$ > get flag.txt`.
+
+*SMTP*
+How a mail client talks to a mail server. By default listens on TCP Port 25.
+SMTP has its own set of commands that run ->
+`HELO` or `EHLO` - initiates SMTP session
+`MAIL FROM` - specifies the sender's email address
+`RCPT TO` - specifies the receiver's email addr.
+`DATA`  - indicates that client will begin sending the content of the email message
+`.` - is sent on a line by itself to indicate the end of email message.
+
+*POP3*
+Receiving email. Aptly named 'Post Office Protocol'. 
+In a primitive manner, you can connect on TCP port 110 via telnet
+`$ > telnet _IP-HERE_ 110`
+If SMTP is handing your letters to the post box, POP3 is basically checking your own mailbox outside your house.
+POP3 Commands :
+`USER <uname>`
+`PASS <passwd>` 
+`STAT` - req the number of messages & total size
+`LIST` - list all messages & their sizes
+`RETR <message_number>` - retrieves the specified message
+`DELE <message_number>` - marks the message for deletion
+`QUIT`
+
+*IMAP*
+Synchronizing mail across devices/sessions. Internet Message Access Protocol.
+Listens on TCP Port 143 by default. 
+Commands ->
+`LOGIN <uname> <passwd>` - authenticates
+`SELECT <mailbox>` - selects the mailbox folder to work with.
+`FETCH <mail_number> <data_item_name>` - Eg: fetch 3 body[]
+`MOVE <sequence_set> <mailbox>` - moves the specified messages to another mailbox
+`COPY <sequence_set> <data_item_name>` - copies the specified messages to another mailbox.
+`LOGOUT`
+
+##### **Networking Secure Protocols**
+Secure protocols & securing existing ones.
+
+*TLS*
+Initially SSL was developed -- secure socket layer -- a crypto protocol to secure the communication b/w a client & a server. Later on, TLS 1.0 was built on SSL 3.0. These crypto protocol operate at OSI model's Transport layer. Secure means C&I - Confidentiality & Integrity. TLS ensures no one can read or modify the exchanged data. 
+Existing protocols did upgrade via TLS : 
+HTTP -> HTTPS; DNS -> DoT (DNS over TLS); MQTT -> MQTTS & SIP -> SIPS; SMTP -> SMTPS, & POP3S, IMAPS, etc.
+In summary,
+A server/client needs to identify itself to get a signed TLS cert. Usually the server admin creates a CSR -- Cert Signing Req -- and submits it to the CA -- Cert Authority -- then CA verifies the CSR & issues a digital cert. Once the signed cert is rec'd, it can be used to identify the client/server to others - who can confirm the validity of the sign. 
+For a host to confirm the validity of a signed cert, the certs of signing authorities need to be installed on the host. [Usually a fee is involved in getting a cert signed however we do have free alt's like Let's Encrypt].
+PS: Self-signed certs should never be used to confirm the authenticity of a server.
+
+*HTTPS*
