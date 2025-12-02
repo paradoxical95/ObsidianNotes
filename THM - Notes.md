@@ -604,3 +604,50 @@ For a host to confirm the validity of a signed cert, the certs of signing author
 PS: Self-signed certs should never be used to confirm the authenticity of a server.
 
 *HTTPS*
+Consider this - a client requests a webpage over HTTP in a browser. After resolving the domain name to an IP Addr -> Before the actual GET Request, the 3-way TCP handshake takes place (SYN, SYN-ACK, ACK), post which the actual web-page is fetched via GET / HTTP/1.1 and after that, connection is closed via TCP (FIN-ACK, FIN-ACK, ACK).
+
+HTTPS is basically HTTP over TLS. Now, requesting a page over HTTPs will require 3 steps (after resolving the domain nam) : Establish a TCP 3-way handshake with the server -> Establish a TLS session -> Communicate using the HTTP protocol.
+Now, in any sample case, there will be 3 packets for the TCP handshake and 4-5 packets for the TLS negotiation. These 2 sets combined make for the proper 'TLS Negotiation & Establishment' packets. After these, we get the Application Data packets (because there's no way to know if it's indeed HTTP or some other protocol).
+Now following the packets and combining them (via Wireshark) will reveal a scrambled file.
+
+Adding TLS over HTTP makes the packets encrypted. Cannot see without a private key -- not that you will ever have that key. 
+
+New Ports summary -> 
+**HTTP : TCP : 80**
+**HTTPS  : TCP : 443**
+**SMTP : TCP : 25**
+**SMTPS : TCP over TLS : 465 & 587**
+**FTP : TCP : 21**
+**FTPS : TCP w/ TLS Cert : 990**
+**POP3  : TCP : 110**
+**POP3S : TCP over TLS : 995**
+**IMAP  : TCP : 143**
+**IMAPS : TCP over TLS : 993**
+
+*SSH*
+Port 22.
+SSH offers not only password-based auth but also public-key & 2FA.
+E2E provided + notifies you of new server keys to protect against MITM.
+Confidentiality of the Data + Cryptography protects the integrity of the traffic.
+Tunneling is possible hear to route other protocols through SSH (kinda like VPN).
+X11 Forwarding can help in a GUI over-the-network.
+`$ > ssh username@hostname`
+-X flag can help with X11 GUI forwarding
+`$ > ssh root@192.168.1.38 -X`
+
+*SFTP & FTPS*
+FTP & FTP-Secure which uses TLS. Uses Port 990 unlike FTP who uses 21.
+Caveat? Unlike HTTPS, SMTPS etc who only want TLS for security, FTPS requires a proper TLS cert to run securely. 
+
+SFTP is actually SSH-FTP. Different than FTP/S. Uses same port 22 as SSH.
+Connect via `$ > sftp user@host` followed by commands like `get filename` & `put filename` to download/upload files.
+Setting up SFTP is relatively easy as you can enable it within the OpenSSH server. 
+
+*VPN*
+TCP/IP had good enough rules for routing and sending the packets but no solution for securing all data from disclosure/alteration. Hence why we have VPNs.
+Simple client-server direct tunnel connection. Good for companies with many branches in different places.
+Once established, all traffic is routed over the VPN i.e through the tunnel. Anyone on the outside will not see the client's IP but rather the VPN server's IP -- hence the geo restriction bypass -- and local ISPs only see the encrypted traffic.
+(Not all would be this good. Be careful of DNS leak by some providers).
+
+##### **Wireshark Basics**
+
