@@ -650,4 +650,15 @@ Once established, all traffic is routed over the VPN i.e through the tunnel. Any
 (Not all would be this good. Be careful of DNS leak by some providers).
 
 ##### **Wireshark Basics**
+2 main file types - `.pcap` and `.pcapng`
+Very versatile and robust tool. Only reads the packets -- doesn't/cannot modify them. 
+Ofc you have tools in the toolbar for stuff like sniffing & processing.
+A display filter bar for the actual packet filtering + can set many capture filters.
+
+After opening a file - We can observe the packet list + packet bytes in 2 ways - Hex & decoded ASCII. We also have a packet + comment count from the file.
+(You can ofc set coloring rules depending upon the packet type).
+You can even merge files together -- by visiting the merge menu.
+To see the file properties - either go to Statistic -> Capture File Properties OR by clicking a notepad icon bottom left (has properties like File Comment, Stats, interfaces, etc).
+3 sections - Packet Dissection, Navigation & Filtering.
+*Packet Dissection*
 
