@@ -666,3 +666,19 @@ Also called 'Protocol Dissection', which investigates packet details by decoding
 When you hover over the packets first line ("frame 33, 54 bytes on wire")-- which is usually the description -- the whole packet bytes code (hex) is highlighted. Then hovering over subsequent lines we can see which source is highlighted ("Ethernet II SRC", "IPv4 SRC", "TCP SRC", "Protocol Errors", etc). These categories mostly align to the OSI model layers -- working top to down (Refer to THM Room images).
 
 *Packet Navigation*
+All packets are numbered ofc. You can go int the 'Go' sub-menu and hit 'Go to Packet 'and enter the number.
+We also have a 'Find Packet' menu that can find packet based on some filters -- via Display filter, Hex, Strings & Regex. Search fields like Packet list, packet details & packer bytes BUT these are separate panes. Wireshark will know nothing on what goes on under one filter.
+You can even Mark the packets (Ctrl+M or Edit>Mark/unmark : default color is always black).
+You can add comments (Ctrl Alt C or Edit>Packet comment) on the packet. 
+Packets can be exported to (File>Export) with file type options.
+2 Display formats -> Time display Default and UTC Time display. (View>Time Display Format)
+Expert Info : A proper mode. (Analyze > Expert Info)
+
+Example : Go to a packet by typing its number, find a packet containing '.txt'; Export a packet's JPEG byte code and use MD5Sum to see the hash; etc.
+
+*Packet Filtering*
+2 types - capture & display filters.
+Cap Filters are used for 'capturing' only the packets valid for the used filter.
+Disp Filters are used for 'viewing' the packets valid for the used filter.
+
+Apply as filter : The most basic way to filter traffic. You can right click any captured packet and use that as a filter for the whole pcap file.
