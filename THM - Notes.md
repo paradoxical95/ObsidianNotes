@@ -661,24 +661,46 @@ To see the file properties - either go to Statistic -> Capture File Properties O
 3 sections - Packet Dissection, Navigation & Filtering.
 
 *Packet Dissection*
-Also called 'Protocol Dissection', which investigates packet details by decoding available protocols & fields. Wireshark already has many -- you can also write your own.
-
-When you hover over the packets first line ("frame 33, 54 bytes on wire")-- which is usually the description -- the whole packet bytes code (hex) is highlighted. Then hovering over subsequent lines we can see which source is highlighted ("Ethernet II SRC", "IPv4 SRC", "TCP SRC", "Protocol Errors", etc). These categories mostly align to the OSI model layers -- working top to down (Refer to THM Room images).
+* Also called 'Protocol Dissection', which investigates packet details by decoding available protocols & fields. Wireshark already has many -- you can also write your own.
+* When you hover over the packets first line ("frame 33, 54 bytes on wire")-- which is usually the description -- the whole packet bytes code (hex) is highlighted. Then hovering over subsequent lines we can see which source is highlighted ("Ethernet II SRC", "IPv4 SRC", "TCP SRC", "Protocol Errors", etc). These categories mostly align to the OSI model layers -- working top to down (Refer to THM Room images).
 
 *Packet Navigation*
-All packets are numbered ofc. You can go int the 'Go' sub-menu and hit 'Go to Packet 'and enter the number.
-We also have a 'Find Packet' menu that can find packet based on some filters -- via Display filter, Hex, Strings & Regex. Search fields like Packet list, packet details & packer bytes BUT these are separate panes. Wireshark will know nothing on what goes on under one filter.
-You can even Mark the packets (Ctrl+M or Edit>Mark/unmark : default color is always black).
-You can add comments (Ctrl Alt C or Edit>Packet comment) on the packet. 
-Packets can be exported to (File>Export) with file type options.
-2 Display formats -> Time display Default and UTC Time display. (View>Time Display Format)
-Expert Info : A proper mode. (Analyze > Expert Info)
-
-Example : Go to a packet by typing its number, find a packet containing '.txt'; Export a packet's JPEG byte code and use MD5Sum to see the hash; etc.
+* All packets are numbered ofc. You can go int the 'Go' sub-menu and hit 'Go to Packet 'and enter the number.
+* We also have a 'Find Packet' menu that can find packet based on some filters -- via Display filter, Hex, Strings & Regex. Search fields like Packet list, packet details & packer bytes BUT these are separate panes. Wireshark will know nothing on what goes on under one filter.
+* You can even Mark the packets (Ctrl+M or Edit>Mark/unmark : default color is always black).
+* You can add comments (Ctrl Alt C or Edit>Packet comment) on the packet. 
+* Packets can be exported to (File>Export) with file type options.
+* 2 Display formats -> Time display Default and UTC Time display. (View>Time Display Format)
+* Expert Info : A proper mode. (Analyze > Expert Info)
+Example Cae : Go to a packet by typing its number, find a packet containing '.txt'; Export a packet's JPEG byte code and use MD5Sum to see the hash; etc.
 
 *Packet Filtering*
 2 types - capture & display filters.
 Cap Filters are used for 'capturing' only the packets valid for the used filter.
 Disp Filters are used for 'viewing' the packets valid for the used filter.
+* Apply as filter : The most basic way to filter traffic. You can right click any captured packet and use that as a filter for the whole pcap file. Selecting any packet to be applied as filter will result in us having control of only 1 entity of the packet (ip.src or tcp.stream). 
+* Prepare as Filter : Just prepare the said filter, don't apply it yet.
+* Conversation Filter : To expand on basic filtering. It helps you view only related packets & hide the rest easily. It expands on the filter (lets say, to include ip.src but also port, etc).
+* You can then, optionally, after filtering, Colorize those conversations. View > Colorize Conversation (and a reset button is there as well). This will keep everything highlighted.
+* Apply as Column : You can put any packet detail/info and make that as a column (Eg: Packet Details > Ethernet > Type : IPv4 -> Apply as column and it appears as expected).
+* Follow Stream : Click on a packet - Rt Click > Analyze > Follow Stream (TCP/UDP). Useful when  you want some form of a trail. A separate window with color coded data shall appear, wherein red is client originated data and blue is server originated data. Wireshark places the filter automatically in this case.
 
-Apply as filter : The most basic way to filter traffic. You can right click any captured packet and use that as a filter for the whole pcap file.
+##### **TCPDump Basics**
+`tcpdump` uses libpcap & OpenSSL libraries. Basically Wireshark but CLI/lacking GUI.
+You can run it as is, but ofc, running it while it is hooked to an interface is better. We are civilized. We won't run it naked. We have flags to attach. 
+* `-i INTERFACE_NAME` or `-i any` -- to listen on all available interfaces. Eg: `-i eth0`
+* `-w FILE_NAME` can be used to save the dump data to a .pcap file -- although you won't see the packets while using this flag.
+* To read such files, you can use `-r FILE_NAME`.
+* `-c COUNT` can be used to specify the number of packets to capture. Without it, it goes on and on till you interrupt it.
+* TCPDump will default resolve IP Addrs & print use-able domains when possible. To avoid DNS lookups, use the `-n` flag & use `-nn` flag to stop both DNS and port number lookups. Basically, we see the numeric data instead of the fancy words i.e direct IP values.
+* Lastly, `-v` flag will produce more verbose outputs. However, tcpdump also offers a `-vv` and `-vvv` for higher and higher verbosity.
+* Examples : `$ > tcpdump -i eth0 -c 50 -v` ; `$ > tcpdump -i wlo2 -w data.pcap` OR even `$ > tcpdump -i any -nn`.
+
+*tcpdump Filtering*
+* Filtering by Host : You only wanna see packets from a certain domain/IP, we can use the `host` keyword. Eg : `$ > sudo tcpdump host example.com -w sample.pcap`. This will only fetch the data relevant to his domain by only capturing 'conversations' done with this domain. 
+  HOWEVER you also have keywords like 'src' and 'dst' to prefix the host keyword `src host IP_ADDR` & `src host HOSTNAME` -- to limit packets to those originating from this source. Similarly you can limit packets in the file to the ones sent to a particular destination by using `dst host IP_ADDR` or `dst host HOSTNAME`.
+* Filtering by Port : Use the `port` keyword followed by the port number to limit the captured packets to those on this particular port. Example : DNS uses TCP and UDP ports 53 by default -- so we'll read all DNS queries read by our NIC. 
+  Eg : `$ > sudo tcpdump -i en0 port 53 -n` -- will query both IPv4 and IPv6 (A and AAAA records from DNS).
+* Filtering by Protocol : Protocols can be filtered -- keywords like `ip`, `ip6`, `udp`, `tcp` & `icmp`. Example : Using icmp and seeing 'echo' means someone is running the `ping`  or `traceroute` command. 
+  `$ > sudo tcpdump -i eth0 icmp -n`.
+* Logical Operators : A few that can be used to club conditions. We can use `and`, `or`, `not`, etc. Examples : `$ > tcpdump host 1.1.1.1 and tcp` ; `$ > tcpdump udp or icmp` ; `$ > tcpdump not tcp`.
