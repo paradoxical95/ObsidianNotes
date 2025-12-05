@@ -696,11 +696,23 @@ You can run it as is, but ofc, running it while it is hooked to an interface is 
 * Lastly, `-v` flag will produce more verbose outputs. However, tcpdump also offers a `-vv` and `-vvv` for higher and higher verbosity.
 * Examples : `$ > tcpdump -i eth0 -c 50 -v` ; `$ > tcpdump -i wlo2 -w data.pcap` OR even `$ > tcpdump -i any -nn`.
 
-*tcpdump Filtering*
+*Filtering*
 * Filtering by Host : You only wanna see packets from a certain domain/IP, we can use the `host` keyword. Eg : `$ > sudo tcpdump host example.com -w sample.pcap`. This will only fetch the data relevant to his domain by only capturing 'conversations' done with this domain. 
   HOWEVER you also have keywords like 'src' and 'dst' to prefix the host keyword `src host IP_ADDR` & `src host HOSTNAME` -- to limit packets to those originating from this source. Similarly you can limit packets in the file to the ones sent to a particular destination by using `dst host IP_ADDR` or `dst host HOSTNAME`.
 * Filtering by Port : Use the `port` keyword followed by the port number to limit the captured packets to those on this particular port. Example : DNS uses TCP and UDP ports 53 by default -- so we'll read all DNS queries read by our NIC. 
   Eg : `$ > sudo tcpdump -i en0 port 53 -n` -- will query both IPv4 and IPv6 (A and AAAA records from DNS).
 * Filtering by Protocol : Protocols can be filtered -- keywords like `ip`, `ip6`, `udp`, `tcp` & `icmp`. Example : Using icmp and seeing 'echo' means someone is running the `ping`  or `traceroute` command. 
   `$ > sudo tcpdump -i eth0 icmp -n`.
-* Logical Operators : A few that can be used to club conditions. We can use `and`, `or`, `not`, etc. Examples : `$ > tcpdump host 1.1.1.1 and tcp` ; `$ > tcpdump udp or icmp` ; `$ > tcpdump not tcp`.
+* Logical Operators : A few that can be used to club conditions. We can use `and`, `or`, `not`, etc. 
+  Examples : `$ > tcpdump host 1.1.1.1 and tcp` ; `$ > tcpdump udp or icmp` ; `$ > tcpdump not tcp`;
+  `$ > tcpdump -i any tcp port 22` -- listen on all interfaces + capture tcp packets to/from port 22 i.e SSH
+  `$ > tcpdump -i wlo1 udp port 123` -- listen on Wifi & filter UDP traffic to port 123 (i.e NTP - network time protocol).
+  `$ > tcpdump -i eth0 host example.com and tcp port 443 -w https.pcap` -- will listen on eth0 and filter traffic exchanged with example.com that uses tcp port 443.
+//Remember to use the `$ > wc` - word count command with '|' operator to get a count & '-n' to avoid unnecessary delays in attempting to resolve IP Addrs. Also, reading doesn't require sudo. `Eg: $ > tcpdump -r traffic.pcap src host 192.168.124.1 -n | wc`
+Few Cases -> To filter all packets on ICMP : `$ > tcpdump -i ens5 -r traffic.pacp icmp -n` and optionally use `... | wc` to get the count.
+-> To see the IP of the host that's inquiring about the MAC of 192.168.124.137 : 
+`$ > tcpdump -i ens5 -r traffic.pcap dst 192.168.124.137 and arp -n` -- because IP to MAC mapping is done via ARP.
+-> DNS queries : `$ > tcpdump -r traffic.pcap port 53 | head`
+
+*Advanced Filtering*
+Many more filters.
