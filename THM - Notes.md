@@ -718,12 +718,30 @@ Few Cases -> To filter all packets on ICMP : `$ > tcpdump -i ens5 -r traffic.pac
 Many more filters. 
 `greater LENGTH` will filter packets that have a length gr8r than or = & `less LENGTH` will filter that have a length less than or =.
 [ Try the 'pcap-filter' command. See its manual.]
-* Binary Operations : ! , & , | for NOT,AND,OR
-* Header Bytes : Protocols like ARP, ICMP, IP etc. We need a proper method to filter for these protocols. Since pcap-filter is technically embedded in tcpdump, we can use its syntax -> `proto[expr:size]`.
-  `proto` can be `arp`, `ether`, `icmp`, `ip`, `ip6`, `tcp` & `udp`
-  `expr` is the byte offset, 0 refers to the first byte.
-  `size` is the number of bytes that interest us. Can be 1,2 or 4. Optional and default is 1.
-  Examples -> 
-  `ether[0] & 1 != 0` -- 
-  `ip[0] & 0xf != 5` -- 
-  Our focus is TCP FLAGS. Which is done via `tcp[tcpflags]`. This will gather all the flags in all packets and then you can compare against other flags individually. 
+[Binary Operations : ! , & , | for NOT,AND,OR]
+Header Bytes : Protocols like ARP, ICMP, IP etc. We need a proper method to filter for these protocols. Since pcap-filter is technically embedded in tcpdump, we can use its syntax -> `proto[expr:size]`.
+`proto` can be `arp`, `ether`, `icmp`, `ip`, `ip6`, `tcp` & `udp`
+`expr` is the byte offset, 0 refers to the first byte.
+`size` is the number of bytes that interest us. Can be 1,2 or 4. Optional and default is 1.
+Examples -> 
+  a) `ether[0] & 1 != 0` -- takes the first byte in the ethernet header & the decimal number 1 (`0000 0001 in binary`) and applies the '&' operation. Purpose is to show packets sent to a multicast addr [Multicast Eth addr identifies a group of devices intended to receive the same data].
+  b) `ip[0] & 0xf != 5` -- takes the first byte in the IP header & compares it with hex number F (`0000 1111 in binary`). Will return true if the result is != to decimal 5. Purpose is to catch all IP packets with Options.
+  c) `$ > tcpdump -r file.pcap greater 15000 -n -t` -- will filter packets with length > 15000 bytes.
+Our focus is TCP FLAGS. Which is done via `tcp[tcpflags]`. This will gather all the flags in all packets and then you can compare against other flags individually.
+Available TCP flags : `tcp-syn` , `tcp-ack` , `tcp-fin` , `tcp-rst` (reset) & `tcp-push`
+So we can write, to capture ->
+`$ > tcpdump "tcp[tcpflags] == tcp-syn"` -- packets with **only** `SYN` flag set, all other flags unset.
+`$ > tcpdump "tcp[tcpflags] & tcp-syn != 0"` -- packets with **at least** `SYN` flag set.
+`$ > tcpdump "tcp[tcpflags] & (tcp-syn|tcp-ack) != 0"` -- packets with **at least** `SYN` or `ACK` flags set.
+
+*Displaying Packets*
+Some useful more flags to play with.
+`-q` : quick output/print brief packet info. (IPs  and timestamps)
+`-e` : print link-level header (IPs, MACs, type, length etc.)
+`-A` : show packet data in ASCII
+`-xx` : show packet data in hex format
+`-X` : show packet headers & data in hex and ASCII
+Eg: `$ > tcpdump -r file.pcap -q`
+
+
+##### **Nmap Basics**
