@@ -685,7 +685,7 @@ Disp Filters are used for 'viewing' the packets valid for the used filter.
 * Apply as Column : You can put any packet detail/info and make that as a column (Eg: Packet Details > Ethernet > Type : IPv4 -> Apply as column and it appears as expected).
 * Follow Stream : Click on a packet - Rt Click > Analyze > Follow Stream (TCP/UDP). Useful when  you want some form of a trail. A separate window with color coded data shall appear, wherein red is client originated data and blue is server originated data. Wireshark places the filter automatically in this case.
 
-##### **TCPDump Basics**
+##### **TCP-Dump Basics**
 `tcpdump` uses libpcap & OpenSSL libraries. Basically Wireshark but CLI/lacking GUI.
 You can run it as is, but ofc, running it while it is hooked to an interface is better. We are civilized. We won't run it naked. We have flags to attach. 
 * `-i INTERFACE_NAME` or `-i any` -- to listen on all available interfaces. Eg: `-i eth0`
@@ -745,3 +745,69 @@ Eg: `$ > tcpdump -r file.pcap -q`
 
 
 ##### **Nmap Basics**
+Scans are done on IP or hostnames. Either one single IP, or a range like `192.168.0.1-10`  or a whole subnet like `192.168.0.1/24` -- which is same as writing `192.168.0.0-255`.
+Without sudo is an unprivileged scan -- aka 'connect' scan.
+`-sn` -> ping scan
+`-sL` -> this followed by the IP subnet range will reveal the IPs that will be scanned as a list.
+`-sT` -> TCP connect scan -- full 3-way handshake.
+`-sS` -> Syn scan (stealth) -- handshake is not completed.
+`-sU` -> scan for all UDP services -- DNS,DHCP, NTP, SNMP etc.
+`-F` -> fast mode -- scans the 100 most common ports (instead of default 1000)
+`-p[range]` -> specify the ports -- eg: -p10-1024, -p-25 (1-25), -p- (all).
+`-O` -> OS detection
+`-sV` -> service & its version
+`-A` -> above 2 +  more stuff
+`-Pn` -> scan hosts that appear to be down
+`-T VALUE` OR `-T keyword` -> -T0 for paranoid, -T1 for sneaky, 2 for polite, 3 normal, 4 aggressive & 5 is insane. `-T4` same as `-T aggressive`.
+`--host-timeout` -> max amt of time to wait for target host
+`--min-parallelism <numprobes>` -> min no. of parallel probes
+`--max-parallelism <numprobes>` -> max no.
+`--min-rate <number>` & `--max-rate<number>` -> Min and Max rate (packets/sec)
+`-v` -> verbose output ; `-vv` , `-vvvv` same as `-v2` and `-v4` for higher verbosity.
+`-d` -> debugging level output. Levels range from 1 to 9 ->`-d9`
+`-oN <filename>` -> Normal output
+`-oX <filename>`-> XML output
+`-oG <filename>`-> grep-able output
+`-oA <basename>`-> Output in all major formats.
+Eg: `$ > nmap -sS 192.168.139.1 -oA gateway`
+
+##### **Cryptography Basics**
+In the most simplest manner, the 'data' is encrypted using a 'key'. Sender converts the 'plaintext' data to 'ciphertext' data by doing so. Then, this key is also used on the receiving end to decrypt the ciphertext data and obtaining the plaintext data.
+Usually, cipher is publicly known but the key must remain a secret (unless it is the public key in asymm encryption).
+*Primer*
+Plaintext : TRYHACKME
+Key : 3 -- assuming a right shift of 3 while encrypting(T -> ~~U~~,~~V~~,W)
+Cipher : Caser Cipher
+Ciphertext : WUBKDFNPH
+(So a left shift of 3 while decrypting)
+*Types of Encryption*
+Symmetric :
+* aka 'Private Key Cryptography' -- single key --keeping the key a secret, is a must -- which is a challenge -- need a secure accessible channel.
+* Case : Emailing a secure doc is easy, but emailing the key is risky. Send it once and it's not a secret anymore. You need a secure accessible channel again.
+* DES (Data Encryption Standard) -- 1977; 56bit key ; 1999 broken, 3DES -- 168 bits (3 times DES) but effectively 112 bits -- ad hoc solution ; deprecated in 2019 & AES -- 2001 ; 128,192 or 256 bits.
+Asymmetric :
+* aka 'Public Key Cryptography' -- uses a pair of keys, one to encrypt other to decrypt.
+* Eg : RSA, D-H, ECC (elliptic curve), etc.
+* A public key and a private key. One can be kept known, other is kept hidden.
+* Usually slower -- cuz of larger keys in the ciphers. RSA uses one out of 3 : 2048/3072/4096-bit keys. D-H also uses a min of 2048-bit but also uses the other 2 for better security. ECC can do the same with shorter keys like : 256-bit which is comparable to 3072-bit RSA key.
+* Basically a math problem -- easy to compute in 1 direction but impossible in reverse.
+*Math Operations*
+2 main Ops - XOR and Modulo
+Modulo : 
+`A % B` -- returns the remainder of A divided by B. Eg: `25%5 = 0`.
+Irreversible. Always returns a non-negative result less than the divisor. For `int a` and a +ve `int n`, the result of `a%n` will always be in the range of `0` to `n-1`.
+XOR :
+'exclusive OR' -- returns `0` if the bits are same (either 1 or 0), and returns `1` when bits are different.
+Eg : 1001 ⊕ 1010 = 0011 (compute one by one from left to right digit by digit)
+XOR is useful for crypto and error detection. Basically, A ⊕ A = 0 and A ⊕ 0 = A --> it means, XOR leaves the value as is when you -xor- with 0 and returns 0 when you -xor- that value with itself.
+Also, A ⊕ B = B ⊕ A , and (A ⊕ B) ⊕ C = A ⊕ (B ⊕ C) --- commulative + associative.
+
+Example : P is plaintext, C is ciphertext and K is key. If we know C & K, we can recover P.
+We start with C ⊕ K = (P ⊕ K) ⊕ K. But we know that (P ⊕ K) ⊕ K = P ⊕ (K ⊕ K) because XOR is associative. Furthermore, we know that K ⊕ K = 0; consequently, (P ⊕ K) ⊕ K = P ⊕ (K ⊕ K) = P ⊕ 0 = P. In other words, XOR served as a simple symmetric encryption algorithm. In practice, it is more complicated as we need a secret key as long as the plaintext.
+
+| A   | B   | A ⊕ B |
+| --- | --- | ----- |
+| 0   | 0   | 0     |
+| 0   | 1   | 1     |
+| 1   | 0   | 1     |
+| 1   | 1   | 0     |
