@@ -8,17 +8,17 @@
         "type": "tabs",
         "children": [
           {
-            "id": "71fd74c55f33c55d",
+            "id": "a135857bfa330821",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "THM - Notes.md",
+                "file": "x86-Arch-Notes.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "THM - Notes"
+              "title": "x86-Arch-Notes"
             }
           }
         ]
@@ -170,15 +170,19 @@
       "bases:Create new base": false
     }
   },
-  "active": "71fd74c55f33c55d",
+  "active": "a135857bfa330821",
   "lastOpenFiles": [
+    "Notes.md",
+    "x86-Arch-Notes.md",
+    "Notes (copy 1).md",
+    "DMRC.md",
+    "Linux Basics for Hackers - Notes.md",
+    "THM - Notes.md",
     "THM - Notes.pdf",
     "Untitled.md",
-    "THM - Notes.md",
     "GSB-MasterHacker-Notes.md",
     "BannerGrab_improved.py",
     "Hacking For Dummies - Notes.md",
-    "Linux Basics for Hackers - Notes.md",
     "ftp_cracker.py",
     "tcp_listener (copy 1).py",
     "tcp_listener.py",
@@ -186,7 +190,6 @@
     "Ch17_Python.py",
     "Untitled.base",
     "Untitled 1.base",
-    "Untitled 2.base",
-    "preserve-whitespace.css"
+    "Untitled 2.base"
   ]
 }
