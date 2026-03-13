@@ -31,3 +31,20 @@ Regs are just fast and easily accessible storage for CPU.
 	- **Extra Segments** : ES, FS and GS -- point to different data sections. These and the DS regs divide the program's mem into 4 distinct data sections.
 
 ##### Memory Overview
+By default, on load the program won't have access to full mem instead limited to his own area in mem. 4 Components -> Stack, Heap, Code & Data.
+- **Code** : Contain's the program's code -- refers to the ***text*** section in a PE (portable executable) file, which includes instructions executed by the CPU. This section of mem has `chmod +x` enabled for CPU (talking about this one only).
+- **Data** : const/non-var data that's initialized. Refers to a ***data*** section in a PE. Often contains Global Vars + other data not meant to change during prog's execution.
+- **Heap** : aka Dynamic mem, contains vars+data created & destroyed during prog exec. When a var is created, mem is runtime allocated and freed when var is deleted.
+- **Stack** : Contains local vars, args passed onto a prog & return addr of parent process that called the prog -- i.e info about prog's control flow. Since return add is related to control flow of CPU's instructions, the stack is often a malware target -- to control the flow (eg: buffer overflow).
+##### Stack Layout
+Stack is a part of the prog's mem that contains the args passed to the prog + local vars + flow control info. Stack follows LIFO based mem. CPU uses 2 regs to keep track of this - Stack Pointer (ESP/RSP) and Base Pointer (EBP/RBP).
+- **Stack Pointer** : Points to the top of the stack. Moves when a new element is inserted OR older one is popped off. Like a HDD platter lol.
+- **The Base Pointer** : Constant.  This is the ref-addr where the current prog stack tracks its local vars+args. Acts as the navigator, telling where the args or the local-vars could be in the stack. 
+- **Old Base Pointer & Return Addr** : Below the Base Ptr lies the old Base Ptr of the calling prog (the one who called the current prog), and below this old Base Ptr lies the Return Addr, where the Instruction Ptr will return one the current prog's exec ends.
+  [Common tech to hijack control flow is to overflow a local var on the stack such that it overwrites the return addr with an addr of malware author's choice -- called Stack Buffer Overflow].
+- **Arguments** : Args being passed to a Fn are pushed to the stack before the Fn starts exec -- these are present right below the return addr on the stack.
+- **Fn Prologue & Epilogue** : When a func is called, the stack is prepared for it to get exec'ed -- meaning, args are pushed to the stack before the start of Fn exec, post which the Return Addr + the old Base Ptr are pushed onto the stack. Once these are pushed, the Base Ptr addr is changed to the top of the stack (which will be the stack ptr of the caller Fn at that time).
+  As the Fn execs, the Stack Ptr moves as per the reqt of the Fn. This portion of code that pushes the Args, the Return Addr'es & the Base Ptr onto the stack & rearranges the Stack and Base Ptr is called 'Fn Prologue'.
+  Similarly, the Old Base Ptr is popped off the stack & onto the Base Ptr when the Fn exits. The return addr is popped off to the Instr'n Ptr & the Stack Ptr is rearranged to point to the top of the stack. The part of the code that performs this action is called 'Fn Epilogue'.
+
+Basically, these Stacks are kinda layered in high to low importance. 
