@@ -47,4 +47,10 @@ Stack is a part of the prog's mem that contains the args passed to the prog + lo
   As the Fn execs, the Stack Ptr moves as per the reqt of the Fn. This portion of code that pushes the Args, the Return Addr'es & the Base Ptr onto the stack & rearranges the Stack and Base Ptr is called 'Fn Prologue'.
   Similarly, the Old Base Ptr is popped off the stack & onto the Base Ptr when the Fn exits. The return addr is popped off to the Instr'n Ptr & the Stack Ptr is rearranged to point to the top of the stack. The part of the code that performs this action is called 'Fn Epilogue'.
 
-Basically, these Stacks are kinda layered in high to low importance. 
+Desc : 
+- ESP always points to the top of the stack -- the lowest currently used address -- every `push` moves it down and every `pop` moves it up.
+- EBP points to a fixed anchor for the current Fn's stack frame. Won't move while a Fn is executing -- this stability lets the CPU reliably find local vars/args (using fixed offsets like `[ebp-4]` or `[ebp+8]`).
+- Stack Frame : A private-workspace for a Fn -- to store its local vars, know its args & know where to return after completion. Every Fn has it's own frame -> When Fns call each other, frames stack on top of each other in mem. Args pushed by caller are higher addrs and local vars are lower addrs. Local vars are what the ESP points too AND are the top of the stack.
+- Basically a frame is prepared as and when needed. The two frames are the same things but during different times. The 'caller' thinks his frame is complete -- containing local vars, saved EBP from whoever called it, a return addr and just pushed Arg1 and 2 onto the stack to prepare for the upcoming call (to basically give it to the Fn that will be called).
+- When the `CALL` instrn is exec, we jump inside the callee Fn. Callee's Fn-Prologue ran -- it pushed the caller's EBP to save it ('Saved EBP') then set EBP = ESP (moving the base pointer down to anchor the new frame), then moved ESP further down to make room for it's own local vars.
+- ![[Pasted image 20260316104410.png]]
